@@ -1,6 +1,10 @@
 # coding: utf-8
 import cherrypy
 
-class ApplicationCl(object):
-    def __init__(self, current_dir):
-        self.current_dir = current_dir
+class Application_cl(object):
+    exposed = True
+
+    def GET(self):
+        return "Hello World"
+
+#EOF
