@@ -42,11 +42,13 @@ class Project_cl(object):
         data = self.db.createProject(name=name, desc=desc)
         return str(data) # TODO return the data as json
 
+    #Update a project with the given id, and return the success
     def PUT(self, id, name, desc):
         if self.db.updateProject(id=id, name=name, desc=desc):
             return "True" # todo return json delete successful
         return "False"  # todo return json their is no project with the given id
 
+    #Delete a project with the given id, and return the success
     def DELETE(self, id):
         if self.db.deleteProject(id=id):
             return "True"  # todo return json delete successful

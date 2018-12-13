@@ -31,8 +31,10 @@ class Database_cl(object):
         data = {}
         if not os.path.isfile(file_s):
             data = {
-                'data': [],
-                'maxId': 0
+                "projects": [],
+                "components": [],
+                "maxCompId": 0,
+                "maxId": 0
             }
             self.writeJSONFile('project', data)
 
@@ -85,11 +87,21 @@ class Database_cl(object):
 #--------------- Project Functions
     #return all projects and their components
     def getAllProjects(self):
-        return self.readJSONFile('project')['data']
+        return self.readJSONFile('project')['projects']
 
     #return one project and its components
     def getProjectById(self, id):
-        return self.getById('project', id)
+        if not self.isNumber(id):
+            return None
+
+        #Only read the projects dict
+        data = self.getAllProjects()
+
+        #Check all entrys if one entry has the searched id
+        for entry in data:
+            if int(id) == entry['id']:
+                return entry
+        return None
 
     #create a new project and return its id
     #returns the id of the new project
@@ -105,12 +117,11 @@ class Database_cl(object):
             "id": newId,
             "name": name,
             "desc": desc,
-            "component": [],
-            "maxComponentId": 0
+            "component": []
         }
 
         #append the data array with the new entry
-        data['data'].append(newEntry)
+        data['projects'].append(newEntry)
         #set the new maxId
         data['maxId'] = newId
 
@@ -134,7 +145,7 @@ class Database_cl(object):
         data = self.readJSONFile('project')
 
         #find the searched project and replace the information
-        for entry in data['data']:
+        for entry in data['projects']:
             if entry['id'] == int(id):
                 entry['name'] = name
                 entry['desc'] = desc
@@ -162,14 +173,14 @@ class Database_cl(object):
         # create an array to save projects which should not be deleted
         data = []
 
-        #Iterate only through the data array of the projects
-        for entry in jsonFILE['data']:
+        #Iterate only through the projects array of the projects
+        for entry in jsonFILE['projects']:
             # Save all projects in the data array, but not the project with the given id
             if not entry['id'] == int(id):
                 data.append(entry)
 
-        #Set the data array as the new data array in the "jsonFile"
-        jsonFILE['data'] = data
+        #Set the data array as the new projects array in the "jsonFile"
+        jsonFILE['projects'] = data
 
         #save the new json file to disk
         self.writeJSONFile('project', jsonFILE)
