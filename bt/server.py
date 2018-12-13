@@ -50,7 +50,7 @@ if __name__ == '__main__':
          }
     )
 
-    cherrypy.config.update("server.conf")
+    cherrypy.config.update(configFileName_s)
     cherrypy.engine.start()
     cherrypy.engine.block()
 #EOF
