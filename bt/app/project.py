@@ -9,10 +9,14 @@ from .database import Database_cl
 
 Anforderung       GET          PUT          POST          DELETE
 ----------------------------------------------------------------
-/                 Alle/Ein      -           Ein neues       -
-                  Projecte                  Project
-                  liefern                   anlegen
-
+/                 Alle         -           Ein neues       -
+                  Projecte                 Project       
+                  liefern                  anlegen       
+                  
+----------------------------------------------------------------
+/id               Ein         Ein            -           Ein
+/?id=id           Project     Project                    Project
+                  liefern     updaten                    loeschen
 """
 
 class Project_cl(object):
