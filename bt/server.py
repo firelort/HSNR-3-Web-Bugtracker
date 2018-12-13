@@ -1,7 +1,7 @@
 # coding: utf-8
 import os
 import cherrypy
-from app import application, template, project
+from app import application, template, project, employee
 
 if __name__ == '__main__':
     try:
@@ -45,6 +45,14 @@ if __name__ == '__main__':
     cherrypy.tree.mount(
         project.Project_cl(currentDir_s),
         '/projekt',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    cherrypy.tree.mount(
+        employee.SoftwareDeveloper_Cl(currentDir_s),
+        '/swentwickler',
         {'/':
              {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
          }
