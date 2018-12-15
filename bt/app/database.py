@@ -225,7 +225,7 @@ class Database_cl(object):
         }
 
         #append the entry to the employee array
-        data['employee'].append(entry)
+        data['employees'].append(entry)
 
         #set the new maxId
         data['maxId'] = newId
@@ -238,15 +238,15 @@ class Database_cl(object):
     def updateEmployee(self, id, roleid, username, firstname, lastname, email, phone, address):
         # ceck if the id is an int value
         if not self.isNumber(id):
-            return None
+            return False
 
         #check if roleid is an int value
         if not self.isNumber(roleid):
-            return None
+            return False
 
         #check if the employee with the given id exists
         if self.getEmployeeById(id) is None:
-            return None
+            return False
 
         #get the employee file/ get all employees
         data = self.readJSONFile('employee')
@@ -259,12 +259,12 @@ class Database_cl(object):
                 break
 
         if not exists:
-            return None
+            return False
 
         #find the searched employee and update the inforamtion
         for entry in data['employees']:
             if entry['id'] == int(id):
-                entry['roleId'] = roleid
+                entry['roleId'] = int(roleid)
                 entry['username'] = username
                 entry['firstname'] = firstname
                 entry['lastname'] = lastname
@@ -288,7 +288,7 @@ class Database_cl(object):
             return False
 
         # get the current file/projects
-        jsonFILE = self.readJSONFile('project')
+        jsonFILE = self.readJSONFile('employee')
 
         # create an array to save projects which should not be deleted
         employee = []
@@ -300,10 +300,10 @@ class Database_cl(object):
                 employee.append(entry)
 
         # Set the employee array as the new employees array in the "jsonFile"
-        jsonFILE['projects'] = employee
+        jsonFILE['employees'] = employee
 
         # save the new json file to disk
-        self.writeJSONFile('project', jsonFILE)
+        self.writeJSONFile('employee', jsonFILE)
         return True
 
     #-------------------- SoftwareDeveloper Functions
@@ -361,7 +361,7 @@ class Database_cl(object):
         # return all softwareDeveloper
         return qualityManagement
 
-    def getAllQualityManagement(self):
+    def getQualityManagementById(self, id):
         # check if the provided id is an int value
         if not self.isNumber(id):
             return None
