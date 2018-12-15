@@ -1,9 +1,8 @@
-#coding utf-8
+# coding utf-8
 import cherrypy
 import json
 
 from .database import Database_cl
-
 
 """
 
@@ -19,6 +18,7 @@ Anforderung       GET          PUT          POST          DELETE
                   liefern     updaten                    loeschen
 """
 
+
 class Project_cl(object):
     exposed = True
 
@@ -27,30 +27,51 @@ class Project_cl(object):
 
     # View all projects or a single
     def GET(self, id=None):
-        #If no id is provided show all projects
+        # If no id is provided show all projects
         if id is None:
             return json.dumps(self.db.getAllProjects(), indent=3)
-        #If an id is given show the project or return a 404 Code if their is no project with the given id
+        # If an id is given show the project or return a 404 Code if their is no project with the given id
         data = self.db.getProjectById(id)
-        if data is None:
-            #todo return http code as json
-            raise cherrypy.HTTPError(404, "Thier is no project with the given information")
-        return json.dumps(data, indent=3)
+        if not data is None:
+            # todo return http code as json
+            return json.dumps(data, indent=3)
+        return json.dumps({
+            "code": 404,
+            "status": "Error",
+            "message": "Es existiert kein Projekt mit dieser ID"
+        }, indent=3)
 
-    #Create a new project and return the id of this project
+    # Create a new project and return the id of this project
     def POST(self, name, desc):
-        data = self.db.createProject(name=name, desc=desc)
-        return str(data) # TODO return the data as json
+        return json.dumps({
+            "id": self.db.createProject(name=name, desc=desc)
+        })
 
-    #Update a project with the given id, and return the success
+    # Update a project with the given id, and return the success
     def PUT(self, id, name, desc):
         if self.db.updateProject(id=id, name=name, desc=desc):
-            return "True" # todo return json delete successful
-        return "False"  # todo return json their is no project with the given id
+            return json.dumps({
+                "code": 200,
+                "status": "OK",
+                "message": "Projekt erfolgreich bearbeitet"
+            }, indent=3)
+        return json.dumps({
+            "code": 404,
+            "status": "Error",
+            "message": "Projekt wurde nicht gefunden"
+        }, indent=3)
 
-    #Delete a project with the given id, and return the success
+    # Delete a project with the given id, and return the success
     def DELETE(self, id):
         if self.db.deleteProject(id=id):
-            return "True"  # todo return json delete successful
-        return "False"  # todo return json their is no project with the given id
-#EOF
+            return json.dumps({
+                "code": 200,
+                "status": "OK",
+                "message": "Projekt erfolgreich gelöscht"
+            }, indent=3)
+        return json.dumps({
+            "code": 404,
+            "status": "Error",
+            "message": "Projekt wurde nicht gefunden"
+        }, indent=3)
+# EOF
