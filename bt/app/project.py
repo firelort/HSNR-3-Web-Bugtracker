@@ -33,21 +33,22 @@ class Project_cl(object):
         # If an id is given show the project or return a 404 Code if their is no project with the given id
         data = self.db.getProjectById(id)
         if not data is None:
-            # todo return http code as json
+            # Return data of the projct as json
             return json.dumps(data, indent=3)
+        # Return an error code as json
         return json.dumps({
             "code": 404,
             "status": "Error",
             "message": "Es existiert kein Projekt mit dieser ID"
         }, indent=3)
 
-    # Create a new project and return the id of this project
+    # Create a new project and return the id of this project as json
     def POST(self, name, desc):
         return json.dumps({
             "id": self.db.createProject(name=name, desc=desc)
         })
 
-    # Update a project with the given id, and return the success
+    # Update a project with the given id, and return the success or an error
     def PUT(self, id, name, desc):
         if self.db.updateProject(id=id, name=name, desc=desc):
             return json.dumps({
@@ -61,7 +62,7 @@ class Project_cl(object):
             "message": "Projekt wurde nicht gefunden"
         }, indent=3)
 
-    # Delete a project with the given id, and return the success
+    # Delete a project with the given id, and return the success or an error
     def DELETE(self, id):
         if self.db.deleteProject(id=id):
             return json.dumps({
