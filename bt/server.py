@@ -89,8 +89,26 @@ if __name__ == '__main__':
 
     # 9. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
     cherrypy.tree.mount(
-        error.errorCategories_Cl(currentDir_s),
+        error.ErrorCategories_Cl(currentDir_s),
         '/katfehler',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 10. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
+    cherrypy.tree.mount(
+        error.ResultCategories_Cl(currentDir_s),
+        '/katursache',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 9. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
+    cherrypy.tree.mount(
+        error.Error_Cl(currentDir_s),
+        '/fehler',
         {'/':
              {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
          }
