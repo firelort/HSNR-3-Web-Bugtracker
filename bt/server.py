@@ -1,7 +1,7 @@
 # coding: utf-8
 import os
 import cherrypy
-from app import application, template, project, employee
+from app import application, template, project, employee, error
 
 if __name__ == '__main__':
     try:
@@ -33,7 +33,7 @@ if __name__ == '__main__':
          }
     )
 
-    # 2. Eintrag: Method-Dispatcher für die "Applikation" "templates" vereinbaren
+    # 3. Eintrag: Method-Dispatcher für die "Applikation" "templates" vereinbaren
     cherrypy.tree.mount(
         template.Template_cl(),
         '/templates',
@@ -42,6 +42,7 @@ if __name__ == '__main__':
          }
     )
 
+    # 4. Eintrag: Method-Dispatcher für die "Applikation" "projekt" vereinbaren
     cherrypy.tree.mount(
         project.Project_cl(currentDir_s),
         '/projekt',
@@ -50,9 +51,46 @@ if __name__ == '__main__':
          }
     )
 
+    # 5. Eintrag: Method-Dispatcher für die "Applikation" "projektkomponenten" vereinbaren
+    cherrypy.tree.mount(
+        project.ProjectComponent_Cl(currentDir_s),
+        '/projektkomponenten',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 6. Eintrag: Method-Dispatcher für die "Applikation" "komponente" vereinbaren
+    cherrypy.tree.mount(
+        project.Component_Cl(currentDir_s),
+        '/komponente',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 7. Eintrag: Method-Dispatcher für die "Applikation" "swentwickler" vereinbaren
     cherrypy.tree.mount(
         employee.SoftwareDeveloper_Cl(currentDir_s),
         '/swentwickler',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 8. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
+    cherrypy.tree.mount(
+        employee.QualityManagement_Cl(currentDir_s),
+        '/qsmitarbeiter',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 9. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
+    cherrypy.tree.mount(
+        error.errorCategories_Cl(currentDir_s),
+        '/katfehler',
         {'/':
              {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
          }

@@ -1,12 +1,13 @@
 import os
 import json
 
+
 class Database_cl(object):
     def __init__(self, path):
-        self.path_s  = os.path.join(path, "data")
+        self.path_s = os.path.join(path, "data")
         self.initJSON()
 
-#-------------- JSON FILE
+    # -------------- JSON FILE
     def initJSON(self):
         file_s = os.path.join(self.path_s, 'employee.json')
         data = {}
@@ -18,11 +19,11 @@ class Database_cl(object):
                     "name": "qs",
                     "desc": "QS-Mitarbeiter"
                 },
-                {
-                    "id": 2,
-                    "name": "se",
-                    "desc": "SE-Mitarbeiter"
-                }],
+                    {
+                        "id": 2,
+                        "name": "se",
+                        "desc": "SE-Mitarbeiter"
+                    }],
                 "maxId": 0,
                 "maxRoleId": 2
             }
@@ -43,23 +44,26 @@ class Database_cl(object):
         data = {}
         if not os.path.isfile(file_s):
             data = {
-                'data': [],
+                'errors': [],
                 'errorCat': [],
                 'resultCat': [],
-                'maxId': 0
+                'maxId': 0,
+                'errMaxId' : 0,
+                'resMaxId': 0
             }
             self.writeJSONFile('error', data)
 
     def writeJSONFile(self, filename, data):
-        with open(os.path.join(self.path_s, filename + ".json"), "w") as f:
-            f.write(json.dumps(data, indent=3))
+        with open(os.path.join(self.path_s, filename + ".json"), "w", encoding='utf-8') as f:
+            f.write(json.dumps(data, indent=3, ensure_ascii=False))
 
     def readJSONFile(self, filename):
-        with open(os.path.join(self.path_s, filename + '.json'), "r") as f:
+        with open(os.path.join(self.path_s, filename + '.json'), "r", encoding='utf-8') as f:
             data = json.load(f)
         return data
-#--------------- HELP FUNCTIONS
-    #Check if a provide string is an int value
+
+    # --------------- HELP FUNCTIONS
+    # Check if a provide string is an int value
     def isNumber(self, string):
         try:
             int(string)
@@ -71,49 +75,49 @@ class Database_cl(object):
     def getNextID(self, filename):
         return self.readJSONFile(filename)['maxId'] + 1
 
-    #Function to get a single entry of a type/file
+    # Function to get a single entry of a type/file
     def getById(self, filename, id):
         if not self.isNumber(id):
             return None
 
-        #Only read the data dict
+        # Only read the data dict
         data = self.readJSONFile(filename)['data']
 
-        #Check all entrys if one entry has the searched id
+        # Check all entrys if one entry has the searched id
         for entry in data:
             if int(id) == entry['id']:
                 return entry
         return None
 
-#--------------- Project Functions
-    #return all projects and their components
+    # --------------- Project Functions
+    # return all projects and their components
     def getAllProjects(self):
         return self.readJSONFile('project')['projects']
 
-    #return one project and its components
+    # return one project and its components
     def getProjectById(self, id):
         if not self.isNumber(id):
             return None
 
-        #Only read the projects dict
+        # Only read the projects dict
         data = self.getAllProjects()
 
-        #Check all entrys if one entry has the searched id
+        # Check all entrys if one entry has the searched id
         for entry in data:
             if int(id) == entry['id']:
                 return entry
         return None
 
-    #create a new project and return its id
-    #returns the id of the new project
+    # create a new project and return its id
+    # returns the id of the new project
     def createProject(self, name, desc):
-        #get the next available ID
+        # get the next available ID
         newId = self.getNextID('project')
 
-        #get the whole content of the project file
+        # get the whole content of the project file
         data = self.readJSONFile('project')
 
-        #create a new entry
+        # create a new entry
         newEntry = {
             "id": newId,
             "name": name,
@@ -121,42 +125,42 @@ class Database_cl(object):
             "component": []
         }
 
-        #append the data array with the new entry
+        # append the data array with the new entry
         data['projects'].append(newEntry)
-        #set the new maxId
+        # set the new maxId
         data['maxId'] = newId
 
-        #save all changes to the json file
+        # save all changes to the json file
         self.writeJSONFile('project', data)
         return newId
 
-    #update a project with the given id
-    #returns True if it was successful
-    #returns False if it was unsuccessful
+    # update a project with the given id
+    # returns True if it was successful
+    # returns False if it was unsuccessful
     def updateProject(self, id, name, desc):
-        #Check if the provided id is an int value
+        # Check if the provided id is an int value
         if not self.isNumber(id):
             return False
 
-        #Check if the searched project exist
+        # Check if the searched project exist
         if self.getProjectById(id) is None:
             return False
 
-        #get the current file/projects
+        # get the current file/projects
         data = self.readJSONFile('project')
 
-        #find the searched project and replace the information
+        # find the searched project and replace the information
         for entry in data['projects']:
             if entry['id'] == int(id):
                 entry['name'] = name
                 entry['desc'] = desc
                 break
 
-        #save the new data to the file
+        # save the new data to the file
         self.writeJSONFile('project', data)
         return True
 
-    #Delete the project of the given id
+    # Delete the project of the given id
     # returns True if it was successful
     # returns False if it was unsuccessful
     def deleteProject(self, id):
@@ -174,25 +178,193 @@ class Database_cl(object):
         # create an array to save projects which should not be deleted
         data = []
 
-        #Iterate only through the projects array of the projects
+        # Iterate only through the projects array of the projects
         for entry in jsonFILE['projects']:
             # Save all projects in the data array, but not the project with the given id
             if not entry['id'] == int(id):
                 data.append(entry)
+            else:
+                components = entry['component']
 
-        #Set the data array as the new projects array in the "jsonFile"
+        # Set the data array as the new projects array in the "jsonFile"
         jsonFILE['projects'] = data
 
-        #save the new json file to disk
+        # Remove the project id from the different components
+        for componentId in components:
+            for entry in jsonFILE['components']:
+                if componentId == entry['id']:
+                    entry['project'].remove(int(id))
+
+
+        # save the new json file to disk
         self.writeJSONFile('project', jsonFILE)
         return True
 
-#-------------------- Employee Function
+    # -------------------- Component Function
+    # Get all components
+    def getAllComponents(self):
+        return self.readJSONFile('project')['components']
+
+    # Get the Component of the given id
+    def getComponentById(self, id):
+        # Test if given id is an int value
+        if not self.isNumber(id):
+            return None
+
+        # Get all Components
+        data = self.getAllComponents()
+
+        # Check all entrys if one entry has the searched id and return it
+        for entry in data:
+            if entry['id'] == int(id):
+                return entry
+        return None
+
+    # Create a new component
+    def createComponent(self, name, desc, projectids):
+        # Get the whole content of the project file
+        data = self.readJSONFile('project')
+
+        # Get the id for the new component
+        newId = data['maxCompId'] + 1
+
+        # Test if projectids is an int or an array
+        try:
+            len(projectids)
+            projects = [int(i) for i in projectids]
+        except TypeError:
+            projects = [projectids]
+
+        # Create a new Entry
+        newEntry = {
+            "id": newId,
+            "name": name,
+            "desc": desc,
+            "project": projects
+        }
+
+        # Append the component array with the new entry
+        data['components'].append(newEntry)
+
+        # Set the new maxCompId
+        data['maxCompId'] = newId
+
+        success = True
+        # Add the component to the project component array
+        for id in projects:
+            exists = False
+            for entry in data['projects']:
+                if int(id) == entry['id']:
+                    entry['component'].append(int(newId))
+                    exists = True
+                    break
+            if not exists:
+                success = False
+                break
+
+        if not success:
+            return None
+        #save all changes to the json file
+        self.writeJSONFile('project', data)
+        return newId
+
+    # Update the component with the given id
+    def updateComponent(self, id, name, desc, projectids):
+        # Check if the id is an int value
+        if not self.isNumber(id):
+            return 1
+
+        # Check if the id is an valid component
+        if self.getComponentById(id) is None:
+            return 1
+
+        # Read the project json File
+        data = self.readJSONFile('project')
+
+        # Test if project ids is an int value or an array
+        try:
+            len(projectids)
+            projects = [int(i) for i in projectids]
+        except:
+            projects = [projectids]
+
+        # Find the searched components and replace the information
+        for entry in data['components']:
+            if entry['id'] == int(id):
+                entry['name'] = name
+                entry['desc'] = desc
+                oldProjects = entry['project']
+                entry['project'] = projects
+                break
+
+        # Delete the component from all projects
+        for projectId in oldProjects:
+            for entry in data['projects']:
+                if int(projectId) == entry['id']:
+                    entry['component'].remove(int(id))
+                    break
+
+        # Add the component to the new projects
+        success = True
+        # Add the component to the project component array
+        for projectId in projects:
+            exists = False
+            for entry in data['projects']:
+                if int(projectId) == entry['id']:
+                    entry['component'].append(int(id))
+                    exists = True
+                    break
+            if not exists:
+                success = False
+                break
+
+        if not success:
+            return 2
+
+
+        # Save the json to the file
+        self.writeJSONFile('project', data)
+        return 0
+
+    # Delete the component with the given id
+    # and remove the id from the projects
+    def deleteComponent(self, id):
+        # Check if the given id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if a component exists with the id
+        if self.getComponentById(id) is None:
+            return False
+
+        # Get the current file
+        data = self.readJSONFile('project')
+
+        # Remove the component from the components array
+        components = []
+        for entry in data['components']:
+            if not entry['id'] == int(id):
+                components.append(entry)
+            else:
+                projects = entry['project']
+        data['components'] = components
+
+        # Remove the component id from the projects
+        for projectEntry in data['projects']:
+            for value in projects:
+                if projectEntry['id'] == value:
+                    projectEntry['component'].remove(int(id))
+
+        # Save the changes to the file
+        self.writeJSONFile('project', data)
+        return True
+
+    # -------------------- Employee Function
     def getAllEmployees(self):
         # return all employees
         return self.readJSONFile('employee')['employees']
 
-    #get the Employee of the given id
+    # Get the Employee of the given id
     def getEmployeeById(self, id):
         if not self.isNumber(id):
             return None
@@ -200,19 +372,19 @@ class Database_cl(object):
         # Only read the employee dict
         data = self.getAllEmployees()
 
-        # Check all entrys if one entry has the searched id
+        # Check all entrys if one entry has the searched id and return it
         for entry in data:
-           if int(id) == entry['id']:
+            if int(id) == entry['id']:
                 return entry
         return None
 
-    #create a new Employee with the given information
+    # create a new Employee with the given information
     def createEmployee(self, roleid, username, firstname, lastname, email, phone, address):
-        #get the next aviable id
+        # get the next aviable id
         newId = self.getNextID('employee')
-        #get the whole content of the employee file
+        # get the whole content of the employee file
         data = self.readJSONFile('employee')
-        #create a new entry / a new user for employees array
+        # create a new entry / a new user for employees array
         entry = {
             "id": newId,
             "roleId": roleid,
@@ -221,18 +393,18 @@ class Database_cl(object):
             "lastname": lastname,
             "email": email,
             "phone": phone,
-            "address":  address
+            "address": address
         }
 
-        #append the entry to the employee array
+        # append the entry to the employee array
         data['employees'].append(entry)
 
-        #set the new maxId
+        # set the new maxId
         data['maxId'] = newId
 
-        #save all changes in file
+        # save all changes in file
         self.writeJSONFile('employee', data)
-        #return the id of the new employee
+        # return the id of the new employee
         return newId
 
     def updateEmployee(self, id, roleid, username, firstname, lastname, email, phone, address):
@@ -240,15 +412,15 @@ class Database_cl(object):
         if not self.isNumber(id):
             return False
 
-        #check if roleid is an int value
+        # check if roleid is an int value
         if not self.isNumber(roleid):
             return False
 
-        #check if the employee with the given id exists
+        # check if the employee with the given id exists
         if self.getEmployeeById(id) is None:
             return False
 
-        #get the employee file/ get all employees
+        # get the employee file/ get all employees
         data = self.readJSONFile('employee')
 
         # check if a role with the given roleid exists
@@ -261,7 +433,7 @@ class Database_cl(object):
         if not exists:
             return False
 
-        #find the searched employee and update the inforamtion
+        # find the searched employee and update the inforamtion
         for entry in data['employees']:
             if entry['id'] == int(id):
                 entry['roleId'] = int(roleid)
@@ -273,17 +445,16 @@ class Database_cl(object):
                 entry['address'] = address
                 break
 
-        #save the new data to file
+        # save the new data to file
         self.writeJSONFile('employee', data)
         return True
 
     def deleteEmployee(self, id):
-        #check if the given id is in an int value
+        # check if the given id is in an int value
         if not self.isNumber(id):
             return False
 
-        #check if the Employee exists
-
+        # check if the Employee exists
         if self.getEmployeeById(id) is None:
             return False
 
@@ -306,45 +477,45 @@ class Database_cl(object):
         self.writeJSONFile('employee', jsonFILE)
         return True
 
-    #-------------------- SoftwareDeveloper Functions
+    # -------------------- SoftwareDeveloper Functions
 
     def getAllSoftwareDeveloper(self):
-        #get all Employee
+        # get all Employee
         data = self.getAllEmployees()
 
-        #create a Array for the SoftwareDeveloper
-        softwareDeveloper =  []
+        # create a Array for the SoftwareDeveloper
+        softwareDeveloper = []
 
-        #for each entry check if it has the right role id
+        # for each entry check if it has the right role id
         for entry in data:
             if entry['roleId'] == 2:
-                #add the entry to the softwareDeveloper array if the role is softwaredeveloper
+                # add the entry to the softwareDeveloper array if the role is softwaredeveloper
                 softwareDeveloper.append(entry)
-        #return all softwareDeveloper
+        # return all softwareDeveloper
         return softwareDeveloper
 
     def getSoftwareDeveloperById(self, id):
-        #check if the provided id is an int value
+        # check if the provided id is an int value
         if not self.isNumber(id):
             return None
 
-        #get the employee with the given id
+        # get the employee with the given id
         data = self.getEmployeeById(id)
 
-        #check if a employee with the id exists
+        # check if a employee with the id exists
         if data is None:
             return None
 
-        #check if the employee has the right role
+        # check if the employee has the right role
         if data['roleId'] == 2:
             return data
         return None
 
     def createSoftwareDeveloper(self, username, fistname, lastname, email, phone, address):
-        #create the new SoftwareDeveloper with the Employee Function and return the id of the employee
+        # create the new SoftwareDeveloper with the Employee Function and return the id of the employee
         return self.createEmployee(2, username, fistname, lastname, email, phone, address)
 
-    #-------------------- QualityManagement Functions
+    # -------------------- QualityManagement Functions
 
     def getAllQualityManagement(self):
         # get all Employee
@@ -381,4 +552,8 @@ class Database_cl(object):
     def createQualityManagement(self, username, firstname, lastname, email, phone, address):
         # create the new QualityManagement with the Employee Function and return the id of the employee
         return self.createEmployee(1, username, fistname, lastname, email, phone, address)
-#EOF
+
+    # -------------------- Error Functions
+
+
+# EOF
