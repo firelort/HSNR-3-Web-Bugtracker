@@ -49,7 +49,7 @@ class Database_cl(object):
                 'errorCat': [],
                 'resultCat': [],
                 'maxId': 0,
-                'errMaxId' : 0,
+                'errMaxId': 0,
                 'resMaxId': 0
             }
             self.writeJSONFile('error', data)
@@ -196,7 +196,6 @@ class Database_cl(object):
                 if componentId == entry['id']:
                     entry['project'].remove(int(id))
 
-
         # save the new json file to disk
         self.writeJSONFile('project', jsonFILE)
         return True
@@ -265,7 +264,7 @@ class Database_cl(object):
 
         if not success:
             return None
-        #save all changes to the json file
+        # save all changes to the json file
         self.writeJSONFile('project', data)
         return newId
 
@@ -321,7 +320,6 @@ class Database_cl(object):
 
         if not success:
             return 2
-
 
         # Save the json to the file
         self.writeJSONFile('project', data)
@@ -554,7 +552,92 @@ class Database_cl(object):
         # create the new QualityManagement with the Employee Function and return the id of the employee
         return self.createEmployee(1, username, fistname, lastname, email, phone, address)
 
+    # -------------------- Error Category
+
+    def getAllErrorCategories(self):
+        return 1
+
+    def getErrorCategoryById(self, id):
+        return 1
+
+    def createErrorCategory(self):
+        return 1
+
+    def updateErrorCategory(self, id):
+        return 1
+
+    def deleteErrorCategory(self, id):
+        return 1
+
+    # -------------------- Result Category
+
+    def getAllResultCategories(self):
+        return 1
+
+    def getResultCategoryById(self, id):
+        return 1
+
+    def createResultCateogry(self):
+        return 1
+
+    def updateResultCategory(self, id):
+        return 1
+
+    def deleteResultCategory(self, id):
+        return 1
+
     # -------------------- Error Functions
 
+    # Alle Fehler zurück geben
+    def getAllErrors(self):
+        return self.readJSONFile('error')['errors']
+
+    def getErrorById(self, id):
+        # Check if the given id is an int
+        if not self.isNumber(id):
+            return None
+
+        # Only read the error dict
+        data = self.getAllErrors()
+
+        # Check all entrys if one entry has the searched id and return it
+        for entry in data:
+            if int(id) == entry['id']:
+                return entry
+        return None
+
+    def getAllErrorsByType(self, type):
+        # Alle Fehler die erkannt sind
+        valideType = False
+
+        if type == 'erkannt':
+            valideType = True
+
+        # Alle Fehler die behoben wurden
+        elif type == 'behoben':
+            valideType = True
+
+        # Alle Fehler die erneut geöffnet wurden, da die alte Lösung nicht funktionert hat
+        elif type == 'anderes':
+            valideType = True
+
+        # Falscher Type return None
+        if not valideType:
+            return None
+
+        erros = self.getAllErrors()
+        result = []
+
+        for entry in errors:
+            if entry['type'] == type:
+                result.append(entry)
+
+        return result
+
+    def createNewError(self):
+        return 1
+
+    def updateError(self, id):
+        return 1
 
 # EOF
