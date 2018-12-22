@@ -45,6 +45,7 @@ class Database_cl(object):
         if not os.path.isfile(file_s):
             data = {
                 'errors': [],
+                'results': [],
                 'errorCat': [],
                 'resultCat': [],
                 'maxId': 0,

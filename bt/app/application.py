@@ -4,7 +4,6 @@ import cherrypy
 class Application_cl(object):
     exposed = True
 
-    def GET(self):
+    def GET(self,):
         return "Hello World"
-
 #EOF
