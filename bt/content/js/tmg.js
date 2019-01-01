@@ -26,7 +26,7 @@ APPUTIL.TemplateManager_cl = class {
       // Templates als Ressource anfordern und speichern
       let path_s = "/templates/";
       let requester_o = new APPUTIL.Requester_cl();
-      requester_o.request_px(path_s,
+      requester_o.get_px(path_s,
          function (responseText_spl) {
             let data_o = JSON.parse(responseText_spl);
             this.templates_o = data_o['templates'];

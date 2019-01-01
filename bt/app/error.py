@@ -44,11 +44,112 @@ class Error_Cl(object):
     def __init__(self, path):
         self.db = Database_cl(path)
 
+    @cherrypy.tools.json_out()
+    def GET(self, id=None, type=None):
+        if id is None:
+            # Check if all or only of one type
+            if type is None:
+                # Return all Errors
+                return self.db.getAllErrors()
+            # Check if the type was valid
+            data = self.db.getAllErrorsByType(type)
+            if data is None:
+                # Type wasn't valid
+                return {
+                    "code": 404,
+                    "status": "Error",
+                    "message": "Es existiert kein derartiger Type"
+                }
+            # Type is valid
+            return data
+        # Test if the given id was valid
+        data = self.db.getErrorById(id)
+        if data is None:
+            # The given ID wasn't valid
+            return {
+                "code": 404,
+                "status": "Error",
+                "message": "Es existiert kein Fehler mit dieser ID"
+            }
+            # The given ID was valid
+        return data
+
+    @cherrypy.tools.json_out()
+    def POST(self, desc, employee, component, category):
+        id = self.db.createNewError(desc, employee, component, category)
+        # Test if it was successful
+        if id == -1:
+            # The error wasn't created, because at least one category doesn't exists
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existieren nicht alle angebenen Katgorien"
+            }
+        elif id == -2:
+            # The error wasn't created, because at least one component doesn't exists
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existieren nicht alle angebenen Komponenten"
+            }
+        elif id == -3:
+            # The error wasn't created, because the employee isn't allowed
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existiert ein Problem mit dem QS-Mitarbeiter"
+            }
+        # The error was successful created
+        return {
+            "id": id
+        }
+
+    @cherrypy.tools.json_out()
+    def PUT(self, id, desc, employee, component, category):
+        result = self.db.updateError(id, desc, employee, component, category)
+        # Test if it was successful
+        if result == -1:
+            # The error wasn't updated, because at least one category doesn't exists
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existieren nicht alle angebenen Katgorien"
+            }
+        elif result == -2:
+            # The error wasn't updated, because at least one component doesn't exists
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existieren nicht alle angebenen Komponenten"
+            }
+        elif result == -3:
+            # The error wasn't updated, because the employee isn't allowed
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existiert ein Problem mit dem QS-Mitarbeiter"
+            }
+        elif result == -4:
+            # The error wasn't updated, because the given id wasn't found.
+            return {
+                "code": 400,
+                "status": "Error",
+                "message": "Es existiert ein Problem mit dem QS-Mitarbeiter"
+            }
+        # The error was successful updated
+        return {
+            "code": 200,
+            "status": "OK",
+            "message": "Der Fehler wurde erfolgreich bearbeitet"
+        }
+
+
 class ErrorCategories_Cl(object):
     exposed = True
 
     def __init__(self, path):
         self.db = Database_cl(path)
+
 
 class ResultCategories_Cl(object):
     exposed = True
@@ -56,5 +157,4 @@ class ResultCategories_Cl(object):
     def __init__(self, path):
         self.db = Database_cl(path)
 
-
-#EOF
+# EOF

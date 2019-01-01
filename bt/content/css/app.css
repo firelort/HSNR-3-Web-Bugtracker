@@ -37,7 +37,7 @@ body {
 
 #nav {
     margin: 0;
-    background-color: darkgray;
+    background-color: whitesmoke;
     padding: 10px 10px 10px 10px;
     min-width: 15%;
     width: 15%;
@@ -47,28 +47,99 @@ body {
 }
 
 #content {
-    margin: 10px 0 10px 10px;
+    margin: 10px 0 0 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100%;
 }
 
-#content-head {
+.content-head {
     order: 1;
+    width: 100%;
+    text-align: center;
 }
 
-#content-body {
+.content-body {
     order: 2;
     overflow: auto;
     padding-right: 2vh;
     margin-top: 10px;
+    height: 100%;
 }
 
-#content-footer {
+.content-footer {
     order: 3;
     margin-top: 10px;
+    padding-bottom: 10px;
 }
 
 .nav-items {
     margin: 10px;
+}
+
+#alert-box {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    border: 2px solid red;
+    background-color: indianred;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9000;
+}
+
+#success-box {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    border: 2px solid green;
+    background-color: lightseagreen;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9000;
+}
+
+a.alert-success-button {
+    text-decoration: none;
+}
+
+div.login-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type=text].login-input {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid grey;
+    display: block;
+}
+
+input[type=text].login-input:focus {
+    border-bottom: 2px solid  red;
+}
+
+input[type=submit].login-button {
+    display: block;
+    padding:5px 15px;
+    background: #ccc;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+input[type=submit].login-button:focus {
+    background: none;
 }

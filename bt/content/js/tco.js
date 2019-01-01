@@ -4,7 +4,7 @@
 // rev. 1, 21.11.2018, Bm
 //------------------------------------------------------------------------------
 
-'use strict';
+'use strict'
 
 if (APPUTIL == undefined) {
    var APPUTIL = {};
@@ -37,7 +37,7 @@ APPUTIL.Generator_cl = class {
       } else if (code_spl.startsWith('include')) {
          // Aufbau: include template data-object
          let parts_a = code_spl.split(' '); // einfache Lösung
-         this.code_a.push('result_a.push(new APPUTIL.TemplateManager_cl().execute_px("' + parts_a[1] + '", ' + parts_a[2] + '));\n');
+         this.code_a.push('result_a.push(new APPUTIL.TemplateManager().execute("' + parts_a[1] + '", ' + parts_a[2] + '));\n');
       } else {
          this.code_a.push(code_spl + '\n');
       }

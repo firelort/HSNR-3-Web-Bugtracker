@@ -1,6 +1,6 @@
 import os
 import json
-
+import datetime
 
 class Database_cl(object):
     def __init__(self, path):
@@ -48,9 +48,10 @@ class Database_cl(object):
                 'results': [],
                 'errorCat': [],
                 'resultCat': [],
-                'maxId': 0,
                 'errMaxId': 0,
-                'resMaxId': 0
+                'resMaxId': 0,
+                'errCatMaxId': 0,
+                'resCatMaxId': 0
             }
             self.writeJSONFile('error', data)
 
@@ -88,6 +89,16 @@ class Database_cl(object):
         for entry in data:
             if int(id) == entry['id']:
                 return entry
+        return None
+
+    # --------------- Login Function
+    def getRoleIdByUsername(self, username):
+        users = self.getAllEmployees()
+
+        for user in users:
+            if user['username'] == username:
+                return user['roleId']
+
         return None
 
     # --------------- Project Functions
@@ -555,7 +566,7 @@ class Database_cl(object):
     # -------------------- Error Category
 
     def getAllErrorCategories(self):
-        return 1
+        return self.readJSONFile('error')['errorCat']
 
     def getErrorCategoryById(self, id):
         return 1
@@ -625,7 +636,7 @@ class Database_cl(object):
         if not valideType:
             return None
 
-        erros = self.getAllErrors()
+        errors = self.getAllErrors()
         result = []
 
         for entry in errors:
@@ -634,10 +645,134 @@ class Database_cl(object):
 
         return result
 
-    def createNewError(self):
-        return 1
+    def createNewError(self, desc, employee, components, categories):
+        # Get the dict of the error file
+        dictionary = self.readJSONFile('error')
 
-    def updateError(self, id):
-        return 1
+        # Calculate the new ID and set the new max ID
+        id = dictionary['errMaxId'] + 1
+        dictionary['errMaxId'] = id
 
+        # Check if the given categories are valid
+        # Get all category IDS
+        catList = []
+        for entry in dictionary['errorCat']:
+            catList.append(entry['id'])
+
+        # Test if the given id is in the array
+        for category in categories:
+            if not int(category) in catList:
+                return -1
+
+        # Check if the given components are valid
+        componentDict = self.getAllComponents()
+        compList = []
+
+        for entry in componentDict:
+            compList.append(entry['id'])
+
+
+        for component in components:
+            if not int(component) in compList:
+                return -2
+
+        # Check if the given employee is valid
+        employees = self.getAllQualityManagement()
+
+        empList = []
+
+        for data in employees:
+            empList.append(data['id'])
+
+        if not employee in empList:
+            return -3
+
+        # Convert the string arrays to an int arrays
+        components = [int(i) for i in components]
+        categories = [int(i) for i in categories]
+
+        # Create new Entry
+        entry = {
+            'id': id,
+            'desc': desc,
+            'date': datetime.datetime.now().strftime('%d.%m.%Y - %H:%M'),
+            'employee':  employee,
+            'type': 'erkannt',
+            'components': components,
+            'categories': categories,
+            'result': -1
+        }
+
+        # Append the new entry to the error array
+        dictionary['errors'].append(entry)
+
+        # Save the complete dictionary to the file
+        self.writeJSONFile('error', dictionary)
+
+        # Return the ID of the new error
+        return id
+
+    def updateError(self, id, desc, employee, components, categories):
+        # Test if a error with the id exists
+        if self.getErrorById(id) is None:
+            return -4
+
+        # Get the dict of the error file
+        dictionary = self.readJSONFile('error')
+
+        # Check if the given categories are valid
+        # Get all category IDS
+        catList = []
+        for entry in dictionary['errorCat']:
+            catList.append(entry['id'])
+
+        # Test if the given id is in the array
+        for category in categories:
+            if not int(category) in catList:
+                return -1
+
+        # Check if the given components are valid
+        componentDict = self.getAllComponents()
+        compList = []
+
+        for entry in componentDict:
+            compList.append(entry['id'])
+
+        for component in components:
+            if not int(component) in compList:
+                return -2
+
+        # Check if the given employee is valid
+        employees = self.getAllQualityManagement()
+        print (employees)
+        empList = []
+
+        for data in employees:
+            empList.append(data['id'])
+
+        if not int(employee) in empList:
+            return -3
+
+        # Convert the string arrays to an int arrays
+        components = [int(i) for i in components]
+        categories = [int(i) for i in categories]
+
+        # Find the error with the given id
+        for entry in dictionary['errors']:
+            if entry['id'] == int(id):
+                print(id)
+                # Change the content of the error
+                entry['desc'] = desc
+                entry['employee'] = employee
+                entry['components'] = components
+                entry['categories'] = categories
+            print (entry)
+
+        # Save the complete dictionary to the file
+        self.writeJSONFile('error', dictionary)
+
+        # Return the ID of the new error
+        return True
+
+    # ----------------------- Result Function
 # EOF

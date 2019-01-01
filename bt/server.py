@@ -1,7 +1,20 @@
 # coding: utf-8
 import os
 import cherrypy
-from app import application, template, project, employee, error
+import json
+from app import application, template, project, employee, error, login, navigation
+
+
+# Return as JSON
+def errorjsonresponse(traceback=None, message=None, status=None, version=None):
+    error = {}
+    statusParts = status.split()
+    error["code"] = statusParts[0]
+    del statusParts[0]
+    error["status"] = ' '.join(map(str, statusParts))
+    error['message'] = message
+    return json.dumps(error)
+
 
 if __name__ == '__main__':
     try:
@@ -17,7 +30,7 @@ if __name__ == '__main__':
         configFileName_s = None
 
     # autoreload-Monitor hier abschalten
-    #cherrypy.engine.autoreload.unsubscribe()
+    # cherrypy.engine.autoreload.unsubscribe()
 
     # 1. Eintrag: Standardverhalten, Berücksichtigung der Konfigurationsangaben im configFile
     cherrypy.tree.mount(
@@ -105,7 +118,7 @@ if __name__ == '__main__':
          }
     )
 
-    # 9. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
+    # 11. Eintrag: Method-Dispatcher für die "Applikation" "qsmitarbeiter" vereinbaren
     cherrypy.tree.mount(
         error.Error_Cl(currentDir_s),
         '/fehler',
@@ -114,7 +127,32 @@ if __name__ == '__main__':
          }
     )
 
+    # 12. Eintrag: Method-Dispatcher für die "Applikation" "login" vereinbaren
+    cherrypy.tree.mount(
+        login.Login_cl(currentDir_s),
+        '/login',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 13. Eintrag: Method-Dispatcher für die "Applikation" "nav" vereinbaren
+    cherrypy.tree.mount(
+        navigation.Navigation_cl(currentDir_s),
+        '/nav',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    cherrypy.config.update({'error_page.400': errorjsonresponse,
+                            'error_page.404': errorjsonresponse,
+                            'error_page.405': errorjsonresponse,
+                            'error_page.415': errorjsonresponse,
+                            # 'error_page.500': errorjsonresponse,
+                            })
+
     cherrypy.config.update(configFileName_s)
     cherrypy.engine.start()
     cherrypy.engine.block()
-#EOF
+# EOF
