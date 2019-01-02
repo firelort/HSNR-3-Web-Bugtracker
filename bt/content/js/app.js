@@ -6,8 +6,9 @@ class Application_cl {
         APPUTIL.es_o.subscribe_px(this, "app.cmd");
 
         this.header_o = new Header_cl("header", "header.tpl.html");
-        this.nav_o = new Navigation_cl("nav", "navbar.tpl.html");
-        this.login_o  = new Login_cl("login.tpl.html");
+        this.nav_o = new Navigation_cl("aside", "navbar.tpl.html");
+        this.login_o = new Login_cl("main", "login.tpl.html");
+        this.employeeList_o = new Employee_cl("main", "employee-list.tpl.html")
     }
 
     notify_px(self, message_spl, data_opl) {
@@ -43,21 +44,30 @@ class Application_cl {
                 // hier müsste man überprüfen, ob der Inhalt gewechselt werden darf
                 switch (data_opl[0]) {
                     case "home":
-                        let markup_s = APPUTIL.tm_o.execute_px("home.tpl.html", null);
-                        let el_o = document.querySelector("main");
-                        if (el_o != null) {
-                            el_o.innerHTML = markup_s;
-                        }
+                        document.querySelector('main').innerHTML = "";
                         break;
-                    case "list":
-                        // Daten anfordern und darstellen
-                        this.listView_o.render_px();
+                    case "all-errors":
                         break;
-                    case "detail":
-                        this.detailView_o.render_px(data_opl[1]);
+                    case "all-projects":
                         break;
-                    case "idBack":
-                        APPUTIL.es_o.publish_px("app.cmd", ["list", null]);
+                    case "all-components":
+                        break;
+                    case "all-employees":
+                        self.employeeList_o.render_px();
+                        break;
+                    case "all-categories":
+                        break;
+                    case "eval-pro-err":
+                        break;
+                    case "eval-cat-err":
+                        break;
+                    case "logout":
+                        self.login_o.render_px();
+                        document.querySelector("aside").innerHTML = "";
+                        break;
+                    case "logged-in":
+                        self.nav_o.render_px();
+                        APPUTIL.es_o.publish_px("app.cmd", ["home", null]);
                         break;
                     case "alert":
                         document.querySelector('#alert-box').removeAttribute("hidden");
@@ -66,12 +76,6 @@ class Application_cl {
                     case "success":
                         document.querySelector('#success-box').removeAttribute("hidden");
                         document.querySelector('#success-text').innerText = data_opl[1];
-                        break;
-                    case "logged-in":
-                        self.nav_o.render_px();
-                        break;
-                    case "logged-out":
-                        self.login_o.render_px();
                         break;
                 }
                 break;
@@ -83,4 +87,4 @@ window.onload = function () {
     APPUTIL.es_o = new APPUTIL.EventService_cl();
     var app_o = new Application_cl();
     APPUTIL.createTemplateManager_px();
-}
+};

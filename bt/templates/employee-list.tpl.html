@@ -1,0 +1,50 @@
+<!--Template-Employee-->
+<div class="content-head">
+    <h2>Mitarbeiterübersicht</h2>
+</div>
+<div class="content-body">
+    <table id="employee-list" class="table-list">
+        <thead class="table-head">
+        <tr>
+            <th>Name</th>
+            <th>Vorname</th>
+            <th>Rolle</th>
+            <th>E-Mail</th>
+            <th>Telefon</th>
+            <th>Adresse</th>
+        </tr>
+        </thead>
+        <tbody class="table-body">
+        @let index;@
+        @let employee;@
+        @for index = 0; index < context.length; index++@
+        @employee = context[index]@
+        <tr data-roleid="#employee['roleId']#" data-userid="#employee['id']#">
+            <td>#employee['lastname']#</td>
+            <td>#employee['firstname']#</td>
+            <td>#employee['roleName']#</td>
+            <td>#employee['email']#</td>
+            <td>#employee['phone']#</td>
+            <td>#employee['address']#</td>
+        </tr>
+        @endfor@
+        </tbody>
+        <tfoot class="table-foot">
+        <tr>
+            <th>Name</th>
+            <th>Vorname</th>
+            <th>Rolle</th>
+            <th>E-Mail</th>
+            <th>Telefon</th>
+            <th>Adresse</th>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="content-footer">
+    <button class='green' data-action="add">Neuen Benutzer anlegen</button>
+    <button class='blue disabled' data-action="view" disabled>Benutzer ansehen</button>
+    <button class='disabled' data-action="edit" disabled>Benutzer bearbeiten</button>
+    <button class='red disabled' data-action="delete" disabled>Benutzer löschen</button>
+</div>
+<!--EOF-->

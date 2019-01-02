@@ -47,11 +47,7 @@ class SoftwareDeveloper_Cl(object):
             # Return data of the software developer as json
             return data
         # return an error code as json
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Es existiert kein Software Entwickler mit dieser ID"
-        }
+        raise cherrypy.HTTPError(404, "Es existiert kein Software Entwickler mit dieser ID")
 
     # Create a new software developer and return the id as json
     @cherrypy.tools.json_out()
@@ -69,11 +65,7 @@ class SoftwareDeveloper_Cl(object):
                 "status": "OK",
                 "message": "Software Entwickler erfolgreich bearbeitet"
             }
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Mitarbeiter wurde nicht gefunden"
-        }
+        raise cherrypy.HTTPError(404, "Mitarbeiter wurde nicht gefunden")
 
     # Delete the employee with the given id and return the success or an error
     @cherrypy.tools.json_out()
@@ -84,11 +76,7 @@ class SoftwareDeveloper_Cl(object):
                        "status": "OK",
                        "message": "Software Entwickler erfolgreich gelöscht"
                    },
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Software Entwickler wurde nicht gefunden"
-        }
+        raise cherrypy.HTTPError(404, "Software Entwickler wurde nicht gefunden")
 
 
 # ------------------------------------------------
@@ -111,11 +99,7 @@ class QualityManagement_Cl(object):
             # Return data of the quality employee as json
             return data
         # Return an error code as json
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Es existiert kein Qualitatsmitarbeiter mit dieser ID"
-        }
+        raise cherrypy.HTTPError(404, "Es existiert kein Qualitatsmitarbeiter mit dieser ID")
 
     # Create a new quality employee and return the id as json
     @cherrypy.tools.json_out()
@@ -133,11 +117,7 @@ class QualityManagement_Cl(object):
                 "status": "OK",
                 "message": "Qualitatsmitarbeiter erfolgreich bearbeitet"
             }
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Mitarbeiter wurde nicht gefunden"
-        }
+        raise cherrypy.HTTPError(404, "Mitarbeiter wurde nicht gefunden")
 
     # Delete the employee with the given id and return the success or an error
     @cherrypy.tools.json_out()
@@ -148,8 +128,5 @@ class QualityManagement_Cl(object):
                 "status": "OK",
                 "message": "Qualitatsmitarbeiter erfolgreich gelöscht"
             }
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Qualitatsmitarbeiter wurde nicht gefunden"
-        }
+        raise cherrypy.HTTPError(404, "Qualitatsmitarbeiter wurde nicht gefunden")
+#EOF

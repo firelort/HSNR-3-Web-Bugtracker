@@ -48,11 +48,7 @@ class Project_cl(object):
             # Return data of the projct as json
             return data
         # Return an error code as json
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Es existiert kein Projekt mit dieser ID"
-        }
+        raise cherrypy.HTTPError(404, "Es existiert kein Projekt mit dieser ID")
 
     # Create a new project and return the id of this project as json
     @cherrypy.tools.json_out()
@@ -70,11 +66,7 @@ class Project_cl(object):
                 "status": "OK",
                 "message": "Projekt erfolgreich bearbeitet"
             }
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Projekt wurde nicht gefunden"
-        }
+        raise cherrypy.HTTPError(404, "Projekt wurde nicht gefunden")
 
     # Delete a project with the given id, and return the success or an error
     @cherrypy.tools.json_out()
@@ -85,12 +77,7 @@ class Project_cl(object):
                 "status": "OK",
                 "message": "Projekt erfolgreich gelöscht"
             }
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Projekt wurde nicht gefunden"
-        }
-
+        raise cherrypy.HTTPError(404, "Projekt wurde nicht gefunden")
 
 class ProjectComponent_Cl(object):
     exposed = True
@@ -133,11 +120,7 @@ class Component_Cl(object):
             # Return the data of the component as json
             return data
         # Return an error as json
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Es existiert keine Komponente mit dieser ID"
-        }
+        raise cherrypy.HTTPError(404, "Es existiert keine Komponente mit dieser ID")
 
     # todo: projects should be an array
 
@@ -149,11 +132,8 @@ class Component_Cl(object):
             return {
                 "id": id
             }
-        return {
-            "code": 400,
-            "status": "Error",
-            "message": "Es existieren angebene Projekte nicht"
-        }
+        raise cherrypy.HTTPError(400, "Es existieren angebene Projekte nicht")
+
 
     # Update the component of the given id and return the success
     def PUT(self, id, name, desc, projects):
@@ -165,17 +145,9 @@ class Component_Cl(object):
                 "message": "Komponente erfolgreich bearbeitet"
             }
         elif code == 1:
-            return {
-                "code": 404,
-                "status": "Error",
-                "message": "Komponente wurde nicht gefunden"
-            }
+            raise cherrypy.HTTPError(404, "Komponente wurde nicht gefunden")
         else:
-            return {
-                "code": 404,
-                "status": "Error",
-                "message": "Es existieret mindestens ein angebenes Projekt nicht"
-            }
+            raise cherrypy.HTTPError(404, "Es existieret mindestens ein angebenes Projekt nicht")
 
     # Delete the component of the given and return the success
     @cherrypy.tools.json_out()
@@ -186,9 +158,5 @@ class Component_Cl(object):
                 "status": "OK",
                 "message": "Komponente erflogreich gelöscht"
             }
-        return {
-            "code": 404,
-            "status": "Error",
-            "message": "Komponente wurde nicht gefunden"
-        }
+        raise cherrypy.HTTPError(404, "Komponente wurde nicht gefunden")
 # EOF

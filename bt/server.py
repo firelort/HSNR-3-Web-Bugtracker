@@ -2,7 +2,7 @@
 import os
 import cherrypy
 import json
-from app import application, template, project, employee, error, login, navigation
+from app import application, template, project, employee, error, login, navigation, role
 
 
 # Return as JSON
@@ -140,6 +140,15 @@ if __name__ == '__main__':
     cherrypy.tree.mount(
         navigation.Navigation_cl(currentDir_s),
         '/nav',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
+    # 13. Eintrag: Method-Dispatcher für die "Applikation" "nav" vereinbaren
+    cherrypy.tree.mount(
+        role.Role_cl(currentDir_s),
+        '/role',
         {'/':
              {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
          }

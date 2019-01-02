@@ -38,7 +38,7 @@ body {
 #nav {
     margin: 0;
     background-color: whitesmoke;
-    padding: 10px 10px 10px 10px;
+    padding: 10px 10px 10px 0;
     min-width: 15%;
     width: 15%;
     display: flex;
@@ -72,10 +72,20 @@ body {
     order: 3;
     margin-top: 10px;
     padding-bottom: 10px;
+    text-align: center;
 }
 
-.nav-items {
-    margin: 10px;
+ul.nav {
+    list-style-type: none;
+}
+
+li.nav-items {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+li.nav-items:hover {
+    color: blue;
 }
 
 #alert-box {
@@ -127,12 +137,12 @@ input[type=text].login-input {
 }
 
 input[type=text].login-input:focus {
-    border-bottom: 2px solid  red;
+    border-bottom: 2px solid red;
 }
 
 input[type=submit].login-button {
     display: block;
-    padding:5px 15px;
+    padding: 5px 15px;
     background: #ccc;
     border: 2px solid #ccc;
     cursor: pointer;
@@ -142,4 +152,83 @@ input[type=submit].login-button {
 
 input[type=submit].login-button:focus {
     background: none;
+}
+
+table.table-list {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 15px;
+    text-align: left;
+}
+
+thead > tr {
+    border-bottom: 1px solid black;
+}
+
+tfoot > tr {
+    border-top: 1px solid black;
+}
+
+tbody > tr:nth-child(2n) {
+    background-color: whitesmoke;
+}
+
+tbody > tr.active {
+    background-color: #868686;
+}
+
+tbody > tr:hover {
+    background-color: yellow;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+button {
+    margin: 0 10px 0 10px;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    background-color: #e7e7e7;
+    color: black;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    border: 4px solid #e7e7e7;
+    cursor: pointer;
+}
+
+button.red {
+    background-color: #f44336;
+    color: white;
+    border: 4px solid #f44336;
+}
+
+button.green {
+    background-color: #4CAF50;
+    color: white;
+    border: 4px solid #4CAF50;
+}
+
+button.blue {
+    background-color: #008CBA;
+    color: white;
+    border: 4px solid #008CBA;
+}
+
+button:hover:not(.disabled) {
+    background-color: white;
+}
+
+button.red:hover:not(.disabled), button.blue:hover:not(.disabled), button.green:hover {
+    color: black;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

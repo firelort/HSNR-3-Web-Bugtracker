@@ -55,22 +55,14 @@ class Error_Cl(object):
             data = self.db.getAllErrorsByType(type)
             if data is None:
                 # Type wasn't valid
-                return {
-                    "code": 404,
-                    "status": "Error",
-                    "message": "Es existiert kein derartiger Type"
-                }
+                raise cherrypy.HTTPError(404, "Es existiert kein derartiger Type")
             # Type is valid
             return data
         # Test if the given id was valid
         data = self.db.getErrorById(id)
         if data is None:
             # The given ID wasn't valid
-            return {
-                "code": 404,
-                "status": "Error",
-                "message": "Es existiert kein Fehler mit dieser ID"
-            }
+            raise cherrypy.HTTPError(404, "Es existiert kein Fehler mit dieser ID")
             # The given ID was valid
         return data
 
@@ -80,25 +72,13 @@ class Error_Cl(object):
         # Test if it was successful
         if id == -1:
             # The error wasn't created, because at least one category doesn't exists
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existieren nicht alle angebenen Katgorien"
-            }
+            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Katgorien")
         elif id == -2:
             # The error wasn't created, because at least one component doesn't exists
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existieren nicht alle angebenen Komponenten"
-            }
+            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Komponenten")
         elif id == -3:
             # The error wasn't created, because the employee isn't allowed
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existiert ein Problem mit dem QS-Mitarbeiter"
-            }
+            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit dem QS-Mitarbeiter")
         # The error was successful created
         return {
             "id": id
@@ -110,32 +90,16 @@ class Error_Cl(object):
         # Test if it was successful
         if result == -1:
             # The error wasn't updated, because at least one category doesn't exists
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existieren nicht alle angebenen Katgorien"
-            }
+            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Katgorien")
         elif result == -2:
             # The error wasn't updated, because at least one component doesn't exists
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existieren nicht alle angebenen Komponenten"
-            }
+            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Komponenten")
         elif result == -3:
             # The error wasn't updated, because the employee isn't allowed
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existiert ein Problem mit dem QS-Mitarbeiter"
-            }
+            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit dem QS-Mitarbeiter")
         elif result == -4:
             # The error wasn't updated, because the given id wasn't found.
-            return {
-                "code": 400,
-                "status": "Error",
-                "message": "Es existiert ein Problem mit dem QS-Mitarbeiter"
-            }
+            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit dem QS-Mitarbeiter")
         # The error was successful updated
         return {
             "code": 200,

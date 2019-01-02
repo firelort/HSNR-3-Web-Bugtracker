@@ -368,7 +368,10 @@ class Database_cl(object):
         # Save the changes to the file
         self.writeJSONFile('project', data)
         return True
-
+    # -------------------- Role Function
+    def getAllRoles(self):
+        return self.readJSONFile('employee')['roles']
+    
     # -------------------- Employee Function
     def getAllEmployees(self):
         # return all employees
@@ -561,7 +564,7 @@ class Database_cl(object):
 
     def createQualityManagement(self, username, firstname, lastname, email, phone, address):
         # create the new QualityManagement with the Employee Function and return the id of the employee
-        return self.createEmployee(1, username, fistname, lastname, email, phone, address)
+        return self.createEmployee(1, username, firstname, lastname, email, phone, address)
 
     # -------------------- Error Category
 
