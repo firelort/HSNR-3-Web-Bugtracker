@@ -8,7 +8,10 @@ class Application_cl {
         this.header_o = new Header_cl("header", "header.tpl.html");
         this.nav_o = new Navigation_cl("aside", "navbar.tpl.html");
         this.login_o = new Login_cl("main", "login.tpl.html");
-        this.employeeList_o = new Employee_cl("main", "employee-list.tpl.html")
+        this.employeeList_o = new Employee_cl("main", "employee-list.tpl.html");
+        this.employeeView_o = new EmployeeView_cl("main", "employee-view.tpl.html");
+        this.employeeEdit_o = new EmployeeEdit_cl("main", "employee-edit.tpl.html");
+        this.employeeAdd_o  = new EmployeeAdd_cl("main", "employee-edit.tpl.html");
     }
 
     notify_px(self, message_spl, data_opl) {
@@ -27,16 +30,19 @@ class Application_cl {
                 }
                 ]);
 
-
                 self.login_o.render_px();
 
                 // Add EventHandler for success and alert box
-                let button = document.querySelector('.alert-success-button');
-                button.addEventListener('click', function (event) {
-                    document.querySelector('#success-box').setAttribute("hidden", '');
-                    document.querySelector('#alert-box').setAttribute("hidden", '');
+                let button = document.querySelectorAll('.alert-success-button');
+                button[0].addEventListener('click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
+                    document.querySelector('#alert-box').setAttribute("hidden", '');
+                });
+                button[1].addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    document.querySelector('#success-box').setAttribute("hidden", '');
                 });
                 break;
 
@@ -68,6 +74,27 @@ class Application_cl {
                     case "logged-in":
                         self.nav_o.render_px();
                         APPUTIL.es_o.publish_px("app.cmd", ["home", null]);
+                        break;
+                    case "single-view":
+                        switch (data_opl[1]) {
+                            case "employee":
+                                self.employeeView_o.render_px(data_opl[2], data_opl[3]);
+                                break;
+                        }
+                        break;
+                    case "edit-view":
+                        switch (data_opl[1]) {
+                            case "employee":
+                                self.employeeEdit_o.render_px(data_opl[2], data_opl[3]);
+                                break;
+                        }
+                        break;
+                    case "add-item":
+                        switch (data_opl[1]) {
+                            case "employee":
+                                self.employeeAdd_o.render_px();
+                                break;
+                        }
                         break;
                     case "alert":
                         document.querySelector('#alert-box').removeAttribute("hidden");

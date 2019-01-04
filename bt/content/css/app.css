@@ -232,3 +232,22 @@ button.red:hover:not(.disabled), button.blue:hover:not(.disabled), button.green:
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+form.page > input, form.page > select {
+    padding: 12px 20px;
+    margin: 8px 0 0 60px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+    width: 80%;
+}
+
+form.page > input:focus {
+    border-bottom: 2px solid red;
+}
+
+form.page > label {
+    padding: 0 20px;
+    margin: 20px 0 0 60px;
+    display: block;
+}

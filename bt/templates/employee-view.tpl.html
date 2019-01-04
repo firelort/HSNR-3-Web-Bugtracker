@@ -1,0 +1,17 @@
+<!--Template-Template-->
+@var employee = context[0]@
+<div class="content-head">
+    <h2>Mitarbeiterübersicht: #employee['firstname']# #employee['lastname']#</h2>
+</div>
+<div class="content-body">
+    Mitarbeiternummer: #employee['id']#<br />
+    Rolle: #employee['roleName']#<br />
+    Nutzername: #employee['username']#<br />
+    E-Mail: #employee['email']#<br />
+    Telefon: #employee['phone']#<br />
+    Adresse: #employee['address']#<br />
+</div>
+<div class="content-footer" data-roleid="#employee['roleId']#" data-userid="#employee['id']#">
+<button data-action="edit">Bearbeiten</button> <button data-action="delete" class="red">Löschen</button>
+</div>
+<!--EOF-->

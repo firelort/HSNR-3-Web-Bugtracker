@@ -14,8 +14,65 @@ APPUTIL.Requester_cl = class {
     constructor() {
     }
 
+
     get_px(path_spl, success_ppl, fail_ppl) {
-        fetch(path_spl)
+        let options = {
+            chache: "no-cache"
+        };
+
+        fetch(path_spl, options)
+            .then(function (response_opl) {
+                let retVal_o = null;
+                if (response_opl.ok) { // 200er-Status-Code
+                    retVal_o = response_opl.text().then(function (text_spl) {
+                        success_ppl(text_spl);
+                    });
+                } else {
+                    retVal_o = response_opl.text().then(function (text_spl) {
+                        fail_ppl(text_spl);
+                    });
+                }
+                return retVal_o;
+            })
+            .catch(function (error_opl) {
+                console.log('[Requester] fetch-Problem: ', error_opl.message);
+                APPUTIL.es_o.publish_px("app.cmd", ["alert", error_opl.message]);
+            });
+    }
+
+    put_px(path_spl, data, success_ppl, fail_ppl) {
+        let options = {
+            method: "PUT",
+            chache: "no-cache",
+            body: data
+        };
+        fetch(path_spl, options)
+            .then(function (response_opl) {
+                let retVal_o = null;
+                if (response_opl.ok) { // 200er-Status-Code
+                    retVal_o = response_opl.text().then(function (text_spl) {
+                        success_ppl(text_spl);
+                    });
+                } else {
+                    retVal_o = response_opl.text().then(function (text_spl) {
+                        fail_ppl(text_spl);
+                    });
+                }
+                return retVal_o;
+            })
+            .catch(function (error_opl) {
+                console.log('[Requester] fetch-Problem: ', error_opl.message);
+                APPUTIL.es_o.publish_px("app.cmd", ["alert", error_opl.message]);
+            });
+    }
+
+    post_px(path_spl, data, success_ppl, fail_ppl) {
+        let options = {
+            method: "POST",
+            chache: "no-cache",
+            body: data
+        };
+        fetch(path_spl, options)
             .then(function (response_opl) {
                 let retVal_o = null;
                 if (response_opl.ok) { // 200er-Status-Code
@@ -48,7 +105,8 @@ APPUTIL.Requester_cl = class {
         });
 
         let options = {
-            method: "DELETE"
+            method: "DELETE",
+            chache: "no-cache"
         };
         fetch(path_spl + string, options)
             .then(function (response_opl) {

@@ -73,8 +73,8 @@ class SoftwareDeveloper_Cl(object):
 
     # Delete the employee with the given id and return the success or an error
     @cherrypy.tools.json_out()
-    def DELETE(self, id):
-        if self.db.deleteEmployee(id):
+    def DELETE(self, ids):
+        if self.db.deleteEmployee(ids):
             return {
                        "code": 200,
                        "status": "OK",
@@ -125,8 +125,8 @@ class QualityManagement_Cl(object):
 
     # Delete the employee with the given id and return the success or an error
     @cherrypy.tools.json_out()
-    def DELETE(self, id):
-        if self.db.deleteEmployee(id):
+    def DELETE(self, ids):
+        if self.db.deleteEmployee(ids):
             return {
                 "code": 200,
                 "status": "OK",
