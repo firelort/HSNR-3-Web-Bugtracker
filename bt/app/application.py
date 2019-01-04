@@ -4,6 +4,7 @@ import cherrypy
 class Application_cl(object):
     exposed = True
 
-    def GET(self,):
-        return "Hello World"
+    @cherrypy.tools.json_out()
+    def GET(self):
+        raise cherrypy.HTTPError(404, "Es existiert kein Qualitatsmitarbeiter mit dieser ID")
 #EOF

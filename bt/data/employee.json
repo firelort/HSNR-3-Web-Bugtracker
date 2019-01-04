@@ -1,0 +1,58 @@
+{
+   "employees": [
+      {
+         "id": 1,
+         "roleId": 1,
+         "username": "user1",
+         "firstname": "Alpha",
+         "lastname": "Bravo",
+         "email": "test@test.com",
+         "phone": "123123123",
+         "address": "Reinarzstraße"
+      },
+      {
+         "id": 2,
+         "roleId": 1,
+         "username": "user2",
+         "firstname": "Bernd",
+         "lastname": "Altmeier",
+         "email": "test@test.com",
+         "phone": "123123123",
+         "address": "Reinarzstraße"
+      },
+      {
+         "id": 3,
+         "roleId": 1,
+         "username": "user3",
+         "firstname": "Charlie",
+         "lastname": "Delta",
+         "email": "test@test.com",
+         "phone": "123123123",
+         "address": "Reinarzstraße"
+      },
+      {
+         "id": 4,
+         "roleId": 2,
+         "username": "user4",
+         "firstname": "Delta",
+         "lastname": "Charlie",
+         "email": "test@test.com",
+         "phone": "123123123",
+         "address": "Reinarzstraße"
+      }
+   ],
+   "roles": [
+      {
+         "id": 1,
+         "name": "qs",
+         "desc": "QS-Mitarbeiter"
+      },
+      {
+         "id": 2,
+         "name": "se",
+         "desc": "SE-Mitarbeiter"
+      }
+   ],
+   "maxId": 4,
+   "maxRoleId": 2
+}

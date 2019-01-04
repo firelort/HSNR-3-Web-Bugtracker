@@ -25,6 +25,10 @@ qsmitarbeiter/    Alle         -           Ein neuen       -
 qsmitarbeiter/id  Ein         Ein            -           Ein
 qsmitarbeiter/?id QS-Mit      QS-Mit                     QS-Mit
                   liefern     updaten                    loeschen
+----------------------------------------------------------------
+employee/         Alle         -           -             Mitarbeiter
+                  Mitarbeiter                            loeschen
+                  liefern                       
 """
 
 
@@ -129,4 +133,43 @@ class QualityManagement_Cl(object):
                 "message": "Qualitatsmitarbeiter erfolgreich gelöscht"
             }
         raise cherrypy.HTTPError(404, "Qualitatsmitarbeiter wurde nicht gefunden")
-#EOF
+
+
+# -------------------------------------------------
+class Emplyoee_cl(object):
+    exposed = True
+
+    def __init__(self, path):
+        self.db = Database_cl(path)
+
+    @cherrypy.tools.json_out()
+    def GET(self):
+        return self.db.getAllEmployees()
+
+    @cherrypy.tools.json_out()
+    def DELETE(self, ids):
+
+        idList = [int(i) for i in ids]
+        failed = []
+
+        for id in idList:
+            if not self.db.deleteEmployee(id):
+                failed.append(id)
+
+        if len(failed) > 0:
+            msg = "Die Mitarbeiter mit der ID: "
+
+            for entry in failed:
+                msg += str(entry) + ", "
+
+            # Remove the last blank and comma
+            msg = msg[:-2]
+            msg += " konnten nicht gelöscht werden."
+            raise cherrypy.HTTPError(404, msg)
+        else:
+            return {
+                "code": 200,
+                "status": "OK",
+                "message": "Alle Mitarbeiter erfolgreich gelöscht!"
+            }
+# EOF

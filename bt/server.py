@@ -154,6 +154,14 @@ if __name__ == '__main__':
          }
     )
 
+    cherrypy.tree.mount(
+        employee.Emplyoee_cl(currentDir_s),
+        '/employee',
+        {'/':
+             {'request.dispatch': cherrypy.dispatch.MethodDispatcher()}
+         }
+    )
+
     cherrypy.config.update({'error_page.400': errorjsonresponse,
                             'error_page.404': errorjsonresponse,
                             'error_page.405': errorjsonresponse,

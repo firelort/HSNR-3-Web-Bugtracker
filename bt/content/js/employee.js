@@ -139,29 +139,24 @@ class Employee_cl {
 
     handleEventHeader(event) {
         let choice = event.srcElement.dataset.target;
-        let n = choice;
         var tbody, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         tbody = document.querySelector("tbody.table-body");
         switching = true;
         // Set the sorting direction to ascending:
         dir = "asc";
-        /* Make a loop that will continue until
-        no switching has been done: */
+        // Make a loop that will continue until no switching has been done
         while (switching) {
             // Start by saying: no switching is done:
             switching = false;
             rows = tbody.rows;
-            /* Loop through all table rows (except the
-            first, which contains table headers): */
+            // Loop through all table rows
             for (i = 0; i < (rows.length - 1); i++) {
                 // Start by saying there should be no switching:
                 shouldSwitch = false;
-                /* Get the two elements you want to compare,
-                one from current row and one from the next: */
-                x = rows[i].getElementsByTagName("TD")[n];
-                y = rows[i + 1].getElementsByTagName("TD")[n];
-                /* Check if the two rows should switch place,
-                based on the direction, asc or desc: */
+                // two elements compare, current and next row
+                x = rows[i].getElementsByTagName("td")[choice];
+                y = rows[i + 1].getElementsByTagName("td")[choice];
+                // Check if the two rows should switch place, based on the direction, asc or desc: */
                 if (dir == "asc") {
                     if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                         // If so, mark as a switch and break the loop:
@@ -177,15 +172,13 @@ class Employee_cl {
                 }
             }
             if (shouldSwitch) {
-                /* If a switch has been marked, make the switch
-                and mark that a switch has been done: */
+                // If a switch has been marked, make the switch and mark that a switch has been done
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
                 // Each time a switch is done, increase this count by 1:
                 switchcount++;
             } else {
-                /* If no switching has been done AND the direction is "asc",
-                set the direction to "desc" and run the while loop again. */
+                // If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.
                 if (switchcount == 0 && dir == "asc") {
                     dir = "desc";
                     switching = true;
@@ -260,11 +253,11 @@ class Employee_cl {
                 } else {
                     let doit = true;
                     if (selectedCount === 1) {
-                        if(!confirm("Wollen Sie den markierten Mitarbeiter wirklich löschen?")) {
+                        if (!confirm("Wollen Sie den markierten Mitarbeiter wirklich löschen?")) {
                             doit = false;
                         }
                     } else {
-                        if(!confirm("Wollen Sie die markierten Mitarbeiter wirklich löschen?")) {
+                        if (!confirm("Wollen Sie die markierten Mitarbeiter wirklich löschen?")) {
                             doit = false;
                         }
                     }
@@ -275,7 +268,23 @@ class Employee_cl {
                         for (index = 0; index < selectedCount; index++) {
                             ids.push(parseInt(selected[index].dataset.userid, 10))
                         }
-                        console.log(ids);
+
+                        let path_s = "/employee/";
+                        let requester_o = new APPUTIL.Requester_cl();
+                        requester_o.delete_px(path_s, ids,
+                            function (responseText_spl) {
+                                let data_o = JSON.parse(responseText_spl);
+                                APPUTIL.es_o.publish_px("app.cmd", ["success", data_o['message']]);
+
+                                //Remove the entries from the table
+                                for (index = 0; index < selectedCount; index++) {
+                                    selected[index].parentNode.removeChild(selected[index]);
+                                }
+
+                            }, function (responseText_spl) {
+                                let data_o = JSON.parse(responseText_spl);
+                                APPUTIL.es_o.publish_px("app.cmd", ["alert", (data_o['message'] + "<br /> Bitte laden Sie die Mitarbeiterliste neu.")]);
+                            });
                     }
                 }
                 break;

@@ -71,11 +71,11 @@ class Application_cl {
                         break;
                     case "alert":
                         document.querySelector('#alert-box').removeAttribute("hidden");
-                        document.querySelector('#alert-text').innerText = data_opl[1];
+                        document.querySelector('#alert-text').innerHTML = data_opl[1];
                         break;
                     case "success":
                         document.querySelector('#success-box').removeAttribute("hidden");
-                        document.querySelector('#success-text').innerText = data_opl[1];
+                        document.querySelector('#success-text').innerHTML = data_opl[1];
                         break;
                 }
                 break;
