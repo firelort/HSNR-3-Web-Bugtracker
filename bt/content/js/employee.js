@@ -406,6 +406,8 @@ class EmployeeEdit_cl {
     }
 
     render_px(userid, roleid) {
+        this.done = [false, false];
+        this.error = false;
         let finished = false;
         let path_s;
         if (roleid === "1") {
