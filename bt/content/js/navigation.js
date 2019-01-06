@@ -17,7 +17,7 @@ class Navigation_cl {
             }
         }
         if (roleId === undefined) {
-            APPUTIL.es_o.publish_px("app.cmd", ["alert", "Es ist ein Fehler mit den Cookies aufgetretten!"]);
+            APPUTIL.es_o.publish_px("alert", ["Es ist ein Fehler mit den Cookies aufgetretten!"]);
         } else {
             let path_s = "/nav/?roleId=" + roleId;
             let requester_o = new APPUTIL.Requester_cl();
@@ -27,7 +27,7 @@ class Navigation_cl {
                     this.doRender_p(data_o)
                 }.bind(this), function (responseText_spl) {
                     let data_o = JSON.parse(responseText_spl);
-                    APPUTIL.es_o.publish_px("app.cmd", ["alert", data_o['message']]);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
                 });
         }
     }
@@ -45,12 +45,13 @@ class Navigation_cl {
     configHandleEvent() {
         let element = document.querySelector(this.element_s);
         if (element != null) {
-         element.addEventListener("click", this.handleEvent);
-      }
+            element.addEventListener("click", this.handleEvent);
+        }
     }
 
     handleEvent(event_opl) {
+        let type = event_opl.target.dataset.action;
         let cmd_s = event_opl.target.dataset.target;
-        APPUTIL.es_o.publish_px("app.cmd", [cmd_s, null]);
+        APPUTIL.es_o.publish_px("app.cmd", [type, cmd_s]);
     }
 }

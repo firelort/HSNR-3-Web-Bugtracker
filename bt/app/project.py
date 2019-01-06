@@ -70,14 +70,32 @@ class Project_cl(object):
 
     # Delete a project with the given id, and return the success or an error
     @cherrypy.tools.json_out()
-    def DELETE(self, id):
-        if self.db.deleteProject(id=id):
+    def DELETE(self, ids):
+        idList = [int(i) for i in ids]
+        failed = []
+
+        for id in idList:
+            if not self.db.deleteProject(id):
+                failed.append(id)
+
+        if len(failed) > 0:
+            msg = "Die Projekte mit der ID: "
+
+            for entry in failed:
+                msg += str(entry) + ", "
+
+            # Remove the last blank and comma
+            msg = msg[:-2]
+            msg += " konnten nicht gelöscht werden."
+            raise cherrypy.HTTPError(404, msg)
+        else:
             return {
                 "code": 200,
                 "status": "OK",
-                "message": "Projekt erfolgreich gelöscht"
+                "message": "Alle Projekte erfolgreich gelöscht!"
             }
-        raise cherrypy.HTTPError(404, "Projekt wurde nicht gefunden")
+
+
 
 class ProjectComponent_Cl(object):
     exposed = True
@@ -134,7 +152,6 @@ class Component_Cl(object):
             }
         raise cherrypy.HTTPError(400, "Es existieren angebene Projekte nicht")
 
-
     # Update the component of the given id and return the success
     def PUT(self, id, name, desc, projects):
         code = self.db.updateComponent(id=id, name=name, desc=desc, projectids=projects)
@@ -151,12 +168,29 @@ class Component_Cl(object):
 
     # Delete the component of the given and return the success
     @cherrypy.tools.json_out()
-    def DELETE(self, id):
-        if self.db.deleteComponent(id=id):
+    def DELETE(self, ids):
+
+        idList = [int(i) for i in ids]
+        failed = []
+
+        for id in idList:
+            if not self.db.deleteComponent(id):
+                failed.append(id)
+
+        if len(failed) > 0:
+            msg = "Die Komponenten mit der ID: "
+
+            for entry in failed:
+                msg += str(entry) + ", "
+
+            # Remove the last blank and comma
+            msg = msg[:-2]
+            msg += " konnten nicht gelöscht werden."
+            raise cherrypy.HTTPError(404, msg)
+        else:
             return {
                 "code": 200,
                 "status": "OK",
-                "message": "Komponente erflogreich gelöscht"
+                "message": "Alle Komponenten erfolgreich gelöscht!"
             }
-        raise cherrypy.HTTPError(404, "Komponente wurde nicht gefunden")
 # EOF

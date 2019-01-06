@@ -4,44 +4,45 @@
     @if employee === true@
     <h2>Mitarbeiter hinzufügen</h2>
     @else@
-    <h2>Mitarbeiter bearbeiten: #employee['firstname']# #employee['lastname']#</h2>
+    <h2>Mitarbeiter bearbeiten: #employee.firstname# #employee.lastname#</h2>
     @endif@
 </div>
 
 <div class="content-body">
     <form class="page" id="employee-form">
-        @if employee === true@
-        <input type="hidden" name="id" value="#employee['id']#"/>
+        @if employee !== true@
+        <input type="hidden" name="id" value="#employee.id#"/>
         @endif@
         <label for="firstnmae">Vorname</label>
-        <input type="text" id="firstnmae" name="firstname" value="#employee['firstname']#"/>
+        <input type="text" id="firstnmae" name="firstname" value="#employee.firstname#" required/>
         <label for="lastname">Nachname</label>
-        <input type="text" id="lastname" name="lastname" value="#employee['lastname']#"/>
+        <input type="text" id="lastname" name="lastname" value="#employee.lastname#" required/>
         <label for="roleid">Benutzerrolle</label>
         <select name="roleid" id="roleid">
             @var index;@
             @var entry;@
             @for index = 1; index < context.length; index++@
             @entry = context[index]@
-            @if entry['id'] === employee['roleId']@
-            <option value="#entry['id']#" selected>#entry['desc']#</option>
+            @if entry.id === employee.roleId@
+            <option value="#entry.id#" selected>#entry.desc#</option>
             @else@
-            <option value="#entry['id']#">#entry['desc']#</option>
+            <option value="#entry.id#">#entry.desc#</option>
             @endif@
             @endfor@
         </select>
         <label for="username">Nutzername</label>
-        <input type="text" id="username" name="username" value="#employee['username']#"/>
+        <input type="text" id="username" name="username" value="#employee.username#" required/>
         <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" value="#employee['email']#"/>
+        <input type="email" id="email" name="email" value="#employee.email#" required/>
         <label for="tel">Telefon</label>
-        <input type="tel" id="tel" name="phone" value="#employee['phone']#"/>
+        <input type="tel" id="tel" name="phone" value="#employee.phone#" required/>
         <label for="address">Adresse</label>
-        <input type="text" id="address" name="address" value="#employee['address']#"/>
+        <input type="text" id="address" name="address" value="#employee.address#" required/>
     </form>
 </div>
 <div class="content-footer">
     <button class="blue" data-action="save">Absenden</button>
+    <button data-action="cancel">Zurück</button>
 </div>
 
 <!--EOF-->

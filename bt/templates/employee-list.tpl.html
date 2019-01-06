@@ -3,12 +3,12 @@
     <h2>Mitarbeiterübersicht</h2>
 </div>
 <div class="content-body">
-    <table id="employee-list" class="table-list">
+    <table id="list" class="table-list">
         <thead class="table-head">
         <tr>
-            <th>Name</th>
-            <th>Vorname</th>
-            <th>Rolle</th>
+            <th class="clickable">Name</th>
+            <th class="clickable">Vorname</th>
+            <th class="clickable">Rolle</th>
             <th>E-Mail</th>
             <th>Telefon</th>
             <th>Adresse</th>
@@ -19,13 +19,13 @@
         @let employee;@
         @for index = 0; index < context.length; index++@
         @employee = context[index]@
-        <tr data-roleid="#employee['roleId']#" data-userid="#employee['id']#">
-            <td>#employee['lastname']#</td>
-            <td>#employee['firstname']#</td>
-            <td>#employee['roleName']#</td>
-            <td>#employee['email']#</td>
-            <td>#employee['phone']#</td>
-            <td>#employee['address']#</td>
+        <tr data-roleid="#employee.roleId#" data-id="#employee.id#">
+            <td>#employee.lastname#</td>
+            <td>#employee.firstname#</td>
+            <td>#employee.roleName#</td>
+            <td>#employee.email#</td>
+            <td>#employee.phone#</td>
+            <td>#employee.address#</td>
         </tr>
         @endfor@
         </tbody>

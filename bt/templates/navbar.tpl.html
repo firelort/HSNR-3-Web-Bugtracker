@@ -4,7 +4,7 @@
     @var entry@
     @for index = 0; index < context.length; index++@
     @entry = context[index]@
-    <li class="nav-items" data-target="#entry['target']#">#entry['name']#</li>
+    <li class="nav-items" data-action="#entry.action#" data-target="#entry.target#">#entry['name']#</li>
     @endfor@
     <li class="nav-items" data-target="logout">Abmelden</li>
 </ul>

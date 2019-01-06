@@ -13,27 +13,35 @@ class Navigation_cl(object):
     def GET(self, roleId):
         commonNav = [{
             "target": "home",
+            "action": "home",
             "name": "Startseite"
         }, {
-            "target": "all-errors",
+            "target": "fehler",
+            "action": "list-view",
             "name": "Fehelerübersicht"
         }, {
-            "target": "all-projects",
+            "target": "projekt",
+            "action": "list-view",
             "name": "Pflege Projekte"
         }, {
-            "target": "all-components",
+            "target": "projektkomponenten",
+            "action": "list-view",
             "name": "Pflege Komponenten"
         }, {
-            "target": "all-employees",
+            "target": "employee",
+            "action": "list-view",
             "name": "Pflege Daten Mitarbeiter"
         }, {
-            "target": "all-categories",
+            "target": "katfehler",
+            "action": "list-view",
             "name": "Pflege Kategorien"
         }, {
             "target": "eval-pro-err",
+            "action": "eval-pro-err",
             "name": "Auswertung Projekte/Fehler"
         }, {
             "target": "eval-cat-err",
+            "action": "eval-pro-err",
             "name": "Auswertung Kategroien/Fehler"
         },
         ]
@@ -41,6 +49,7 @@ class Navigation_cl(object):
             # The user is a QS-Mitarbeiter
             qsNav = [{
                 "target": "new-error",
+                "action": "list-view",
                 "name": "Neuen Fehler anlegen"
             }]
             return qsNav + commonNav

@@ -1,0 +1,38 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Projektübersicht</h2>
+</div>
+<div class="content-body">
+    <table id="list" class="table-list">
+        <thead class="table-head">
+        <tr>
+            <th class="clickable">Name</th>
+            <th>Beschreibung</th>
+        </tr>
+        </thead>
+        <tbody class="table-body">
+        @let index;@
+        @let projekt;@
+        @for index = 0; index < context.length; index++@
+        @projekt = context[index]@
+        <tr data-id="#projekt.id#">
+            <td>#projekt.name#</td>
+            <td>#projekt.desc#</td>
+        </tr>
+        @endfor@
+        </tbody>
+        <tfoot class="table-foot">
+        <tr>
+            <th>Name</th>
+            <th>Beschreibung</th>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="content-footer">
+    <button class='green' data-action="add">Neues Projekt anlegen</button>
+    <button class='blue disabled' data-action="view" disabled>Projekt ansehen</button>
+    <button class='disabled' data-action="edit" disabled>Projekt bearbeiten</button>
+    <button class='red disabled' data-action="delete" disabled>Projekte löschen</button>
+</div>
+<!--EOF-->

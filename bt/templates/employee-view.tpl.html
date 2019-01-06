@@ -1,5 +1,5 @@
 <!--Template-Template-->
-@var employee = context[0]@
+@var employee = context@
 <div class="content-head">
     <h2>Mitarbeiterübersicht: #employee['firstname']# #employee['lastname']#</h2>
 </div>
@@ -11,7 +11,8 @@
     Telefon: #employee['phone']#<br />
     Adresse: #employee['address']#<br />
 </div>
-<div class="content-footer" data-roleid="#employee['roleId']#" data-userid="#employee['id']#">
-<button data-action="edit">Bearbeiten</button> <button data-action="delete" class="red">Löschen</button>
+<div class="content-footer" data-roleid="#employee['roleId']#" data-id="#employee['id']#">
+    <button data-action="edit">Bearbeiten</button>
+    <button data-action="delete" class="red">Löschen</button>
 </div>
 <!--EOF-->

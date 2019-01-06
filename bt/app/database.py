@@ -471,10 +471,10 @@ class Database_cl(object):
         if self.getEmployeeById(id) is None:
             return False
 
-        # get the current file/projects
+        # get the current file
         jsonFILE = self.readJSONFile('employee')
 
-        # create an array to save projects which should not be deleted
+        # create an array to save employee which should not be deleted
         employee = []
 
         # Iterate only through the employee array of the projects

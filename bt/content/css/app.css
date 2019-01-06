@@ -180,7 +180,7 @@ tbody > tr.active {
     background-color: #868686;
 }
 
-tbody > tr:hover {
+tbody > tr:hover:not(.not-hoverable) {
     background-color: yellow;
 }
 
@@ -250,4 +250,16 @@ form.page > label {
     padding: 0 20px;
     margin: 20px 0 0 60px;
     display: block;
+}
+
+textarea {
+    width: 80%;
+    margin: 8px 0 0 60px;
+    height: 150px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: none;
 }

@@ -4,17 +4,35 @@ class Application_cl {
         APPUTIL.es_o.subscribe_px(this, "templates.loaded");
         APPUTIL.es_o.subscribe_px(this, "templates.failed");
         APPUTIL.es_o.subscribe_px(this, "app.cmd");
+        APPUTIL.es_o.subscribe_px(this, "alert");
+        APPUTIL.es_o.subscribe_px(this, "success");
 
         this.header_o = new Header_cl("header", "header.tpl.html");
         this.nav_o = new Navigation_cl("aside", "navbar.tpl.html");
         this.login_o = new Login_cl("main", "login.tpl.html");
-        this.employeeList_o = new Employee_cl("main", "employee-list.tpl.html");
-        this.employeeView_o = new EmployeeView_cl("main", "employee-view.tpl.html");
-        this.employeeEdit_o = new EmployeeEdit_cl("main", "employee-edit.tpl.html");
-        this.employeeAdd_o  = new EmployeeAdd_cl("main", "employee-edit.tpl.html");
+
+        this.employeeList_o = new Employee_cl();
+        this.employeeView_o = new EmployeeView_cl();
+        this.employeeEdit_o = new EmployeeEdit_cl();
+        this.employeeAdd_o = new EmployeeAdd_cl("main", "employee-edit.tpl.html");
+
+        this.projectList_o = new Projects_cl();
+        this.projectView_o = new ProjectView_cl();
+        this.projectEdit_o = new ProjectEdit_cl();
+        this.projectAdd_o = new ProjectAdd_cl("main", "projekt-edit.tpl.html");
+
+        this.componentList_o = new Components_cl();
+        this.componentView_o = new ComponentView_cl();
+        this.componentEdit_o = new ComponentEdit_cl();
+        this.componentAdd_o = new ComponentAdd_cl("main", "komponente-edit.tpl.html");
+
+        APPUTIL.list_o = new List_cl("main");
+        APPUTIL.view_o = new View_cl("main");
+        APPUTIL.edit_o = new Edit_cl("main");
     }
 
     notify_px(self, message_spl, data_opl) {
+        console.log(message_spl, data_opl);
         switch (message_spl) {
             case "templates.failed":
                 alert("Vorlagen konnten nicht geladen werden.");
@@ -47,21 +65,74 @@ class Application_cl {
                 break;
 
             case "app.cmd":
-                // hier müsste man überprüfen, ob der Inhalt gewechselt werden darf
+                //Skip the test if data_opl[10] is true
+                if (data_opl[10] !== true) {
+                    // hier müsste man überprüfen, ob der Inhalt gewechselt werden darf
+                    // get all formelements
+                    let form = document.querySelector("form");
+                    if (form != null) {
+                        let doConfirm = false;
+                        for (let index = 0; index < form.length; index++) {
+                            if (doConfirm === true) {
+                                break;
+                            }
+                            let element = form[index];
+                            if (element.type === "hidden") {
+                                continue;
+                            }
+                            if (element.type === "select-one") {
+                                for (let optionIndex = 0; optionIndex < element.length; optionIndex++) {
+                                    if (element[optionIndex].hasAttribute("selected")) {
+                                        if (element[optionIndex].value !== element.value) {
+                                            console.log("Rolle hat sich geändert");
+                                            doConfirm = true;
+                                        }
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (element.defaultValue !== element.value) {
+                                    doConfirm = true;
+                                    console.log("Daten haben sich geändert");
+                                }
+                            }
+                        }
+                        if (doConfirm === true) {
+                            if (!confirm("Wollen Sie die Seite wirklich wechseln?")) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 switch (data_opl[0]) {
                     case "home":
                         document.querySelector('main').innerHTML = "";
                         break;
-                    case "all-errors":
-                        break;
-                    case "all-projects":
-                        break;
-                    case "all-components":
-                        break;
-                    case "all-employees":
-                        self.employeeList_o.render_px();
-                        break;
-                    case "all-categories":
+                    case "list-view":
+                        switch (data_opl[1]) {
+                            case "employee":
+                                self.employeeList_o.render_px();
+                                break;
+                            case "projekt":
+                                self.projectList_o.render_px();
+                                break;
+                            case "projektkomponenten":
+                                console.log(data_opl[1], data_opl);
+                                break;
+                            case "komponente":
+                                console.log(data_opl[1], data_opl);
+                                break;
+                            case "katfehler":
+                                console.log(data_opl[1], data_opl);
+                                break;
+                            case "fehler":
+                                console.log(data_opl[1], data_opl);
+                                break;
+                            case "katursache":
+                                console.log(data_opl[1], data_opl);
+                                break;
+                        }
                         break;
                     case "eval-pro-err":
                         break;
@@ -80,12 +151,18 @@ class Application_cl {
                             case "employee":
                                 self.employeeView_o.render_px(data_opl[2], data_opl[3]);
                                 break;
+                            case "projekt":
+                                self.projectView_o.render_px(data_opl[2]);
+                                break;
                         }
                         break;
                     case "edit-view":
                         switch (data_opl[1]) {
                             case "employee":
                                 self.employeeEdit_o.render_px(data_opl[2], data_opl[3]);
+                                break;
+                            case "projekt":
+                                self.projectEdit_o.render_px(data_opl[2]);
                                 break;
                         }
                         break;
@@ -94,17 +171,19 @@ class Application_cl {
                             case "employee":
                                 self.employeeAdd_o.render_px();
                                 break;
+                            case "projekt":
+                                self.projectAdd_o.render_px();
                         }
                         break;
-                    case "alert":
-                        document.querySelector('#alert-box').removeAttribute("hidden");
-                        document.querySelector('#alert-text').innerHTML = data_opl[1];
-                        break;
-                    case "success":
-                        document.querySelector('#success-box').removeAttribute("hidden");
-                        document.querySelector('#success-text').innerHTML = data_opl[1];
-                        break;
                 }
+                break;
+            case "alert":
+                document.querySelector('#alert-box').removeAttribute("hidden");
+                document.querySelector('#alert-text').innerHTML = data_opl[0];
+                break;
+            case "success":
+                document.querySelector('#success-box').removeAttribute("hidden");
+                document.querySelector('#success-text').innerHTML = data_opl[0];
                 break;
         }
     }

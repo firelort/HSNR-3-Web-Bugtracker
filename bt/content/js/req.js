@@ -36,7 +36,6 @@ APPUTIL.Requester_cl = class {
             })
             .catch(function (error_opl) {
                 console.log('[Requester] fetch-Problem: ', error_opl.message);
-                APPUTIL.es_o.publish_px("app.cmd", ["alert", error_opl.message]);
             });
     }
 
@@ -62,7 +61,6 @@ APPUTIL.Requester_cl = class {
             })
             .catch(function (error_opl) {
                 console.log('[Requester] fetch-Problem: ', error_opl.message);
-                APPUTIL.es_o.publish_px("app.cmd", ["alert", error_opl.message]);
             });
     }
 
@@ -88,7 +86,6 @@ APPUTIL.Requester_cl = class {
             })
             .catch(function (error_opl) {
                 console.log('[Requester] fetch-Problem: ', error_opl.message);
-                APPUTIL.es_o.publish_px("app.cmd", ["alert", error_opl.message]);
             });
     }
 
@@ -123,7 +120,6 @@ APPUTIL.Requester_cl = class {
                 return retVal_o;
             }).catch(function (error_opl) {
             console.log('[Requester] fetch-Problem: ', error_opl.message);
-            APPUTIL.es_o.publish_px("app.cmd", ["alert", error_opl.message]);
         });
     }
 };

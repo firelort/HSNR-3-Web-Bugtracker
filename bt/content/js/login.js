@@ -35,16 +35,16 @@ class Login_cl {
                     let data_o = JSON.parse(responseText_spl);
                     //Save username and roleid in cookies
                     document.cookie = "username=" + data_o['username'] + "; path=/";
-                    document.cookie = "role=" + data_o['roleId'] +  "; path=/";
+                    document.cookie = "role=" + data_o['roleId'] + "; path=/";
 
                     //Publish the success to app.cmd
                     APPUTIL.es_o.publish_px("app.cmd", ["logged-in", null]);
                 }.bind(this), function (responseText_spl) {
                     let data_o = JSON.parse(responseText_spl);
-                    APPUTIL.es_o.publish_px("app.cmd", ["alert", data_o['message']]);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
                 });
         } else {
-            APPUTIL.es_o.publish_px("app.cmd", ["alert",'Der Nutzername darf nicht leer sein!']);
+            APPUTIL.es_o.publish_px("alert", ['Der Nutzername darf nicht leer sein!']);
         }
         event.preventDefault();
         event.stopPropagation();

@@ -1,0 +1,26 @@
+<!--Template-Template-->
+<div class="content-head">
+    @if context == null@
+    <h2>Projekt hinzufügen</h2>
+    @else@
+    <h2>Projekt bearbeiten</h2>
+    @endif@
+</div>
+<div class="content-body">
+    <form class="page" id="projekt-form">
+        @if context != null@
+        <input type="hidden" name="id" value="#context.id#"/>
+        @else@
+        @context = {};@
+        @endif@
+        <label for="name">Projektname</label>
+        <input type="text" id="name" name="name" value="#context.name#" required/>
+        <label for="lastname">Beschreibung</label>
+        <textarea id="lastname" name="desc" required>#context.desc#</textarea>
+    </form>
+</div>
+<div class="content-footer">
+    <button class="blue" data-action="save">Absenden</button>
+    <button data-action="cancel">Zurück</button>
+</div>
+<!--EOF-->

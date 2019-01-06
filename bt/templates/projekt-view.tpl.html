@@ -1,0 +1,38 @@
+<!--Template-ProjektView-->
+@var projekt = context@
+<div class="content-head">
+    <h2>Projektübersicht: #projekt.name#</h2>
+</div>
+<div class="content-body">
+    <h4>Projektbeschreibung;</h4>
+    <p>#projekt.desc#</p>
+    <hr/>
+    <h4>Projektkomponenten</h4>
+    <table class="table-list">
+        <thead>
+        <tr>
+            <th>##</th>
+            <th>Name</th>
+            <th>Beschreibung</th>
+        </tr>
+        </thead>
+        <tbody>
+        @let index;@
+        @let component;@
+        @let components = projekt.component@
+        @for index = 0; index < components.length; index++@
+        @component = components[index]@
+        <tr class="not-hoverable">
+            <td>#component.id#</td>
+            <td>#component.name#</td>
+            <td>#component.desc#</td>
+        </tr>
+        @endfor@
+        </tbody>
+    </table>
+</div>
+<div class="content-footer" data-id="#projekt.id#">
+    <button data-action="edit">Bearbeiten</button>
+    <button data-action="delete" class="red">Löschen</button>
+</div>
+<!--EOF-->
