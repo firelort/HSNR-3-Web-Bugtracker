@@ -233,12 +233,27 @@ class ProjectAdd_cl {
                 APPUTIL.es_o.publish_px("app.cmd", ["list-view", "projekt"]);
                 break;
             case "save":
-                let requester_o = new APPUTIL.Requester_cl();
                 let idElement = document.querySelector('main div.content-body form#employee-form input[type=hidden]');
                 if (idElement != null) {
                     idElement.parentNode.removeChild(idElement);
                 }
-                let formData = new FormData(document.querySelector('main div.content-body form#projekt-form'));
+
+                //Test if all inputs are filled
+                let form = document.querySelector('main div.content-body form#projekt-form');
+                let stopSave = false;
+                for (let index = 0; index < form.length; index++) {
+                    if (form[index].value === "") {
+                        APPUTIL.es_o.publish_px("alert", ["Es sind nicht alle Felder ausgefüllt."]);
+                        stopSave = true;
+                        break;
+                    }
+                }
+                if (stopSave) {
+                    break;
+                }
+
+                let requester_o = new APPUTIL.Requester_cl();
+                let formData = new FormData(form);
 
                 requester_o.post_px("/projekt/", formData,
                     function (responseText_spl) {

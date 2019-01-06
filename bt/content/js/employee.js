@@ -344,7 +344,6 @@ class EmployeeAdd_cl {
                 APPUTIL.es_o.publish_px("app.cmd", ["list-view", "employee"]);
                 break;
             case "save":
-                let requester_o = new APPUTIL.Requester_cl();
                 let roleId = document.querySelector('main select#roleid').value;
                 let roleIdElement = document.querySelector('main select#roleid');
                 roleIdElement.parentNode.removeChild(roleIdElement);
@@ -352,7 +351,23 @@ class EmployeeAdd_cl {
                 if (idElement != null) {
                     idElement.parentNode.removeChild(idElement);
                 }
-                let formData = new FormData(document.querySelector('main div.content-body form#employee-form'));
+
+                //Test if all inputs are filled
+                let form = document.querySelector('main div.content-body form#employee-form');
+                let stopSave = false;
+                for (let index = 0; index < form.length; index++) {
+                    if (form[index].value === "") {
+                        APPUTIL.es_o.publish_px("alert", ["Es sind nicht alle Felder ausgefüllt."]);
+                        stopSave = true;
+                        break;
+                    }
+                }
+                if (stopSave) {
+                    break;
+                }
+
+                let requester_o = new APPUTIL.Requester_cl();
+                let formData = new FormData(form);
                 let path_s;
 
                 if (roleId === "1") {
