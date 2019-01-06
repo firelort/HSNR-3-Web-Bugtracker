@@ -120,8 +120,8 @@ class Application_cl {
                             case "projektkomponenten":
                                 console.log(data_opl[1], data_opl);
                                 break;
-                            case "komponente":
-                                console.log(data_opl[1], data_opl);
+                            case "komponenten":
+                                self.componentList_o.render_px();
                                 break;
                             case "katfehler":
                                 console.log(data_opl[1], data_opl);

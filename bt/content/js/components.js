@@ -2,6 +2,10 @@ class Components_cl {
     constructor() {
 
     }
+
+    render_px() {
+        APPUTIL.list_o.render_px("komponenten", null);
+    }
 }
 
 class ComponentView_cl {

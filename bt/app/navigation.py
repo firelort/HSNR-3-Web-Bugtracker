@@ -24,7 +24,7 @@ class Navigation_cl(object):
             "action": "list-view",
             "name": "Pflege Projekte"
         }, {
-            "target": "projektkomponenten",
+            "target": "komponenten",
             "action": "list-view",
             "name": "Pflege Komponenten"
         }, {
