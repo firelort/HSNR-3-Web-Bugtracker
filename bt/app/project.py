@@ -71,7 +71,11 @@ class Project_cl(object):
     # Delete a project with the given id, and return the success or an error
     @cherrypy.tools.json_out()
     def DELETE(self, ids):
-        idList = [int(i) for i in ids]
+        if isinstance(ids, list):
+            idList = [int(i) for i in ids]
+        else:
+            idList = [int(ids)]
+
         failed = []
 
         for id in idList:
@@ -169,8 +173,11 @@ class Component_Cl(object):
     # Delete the component of the given and return the success
     @cherrypy.tools.json_out()
     def DELETE(self, ids):
+        if isinstance(ids, list):
+            idList = [int(i) for i in ids]
+        else:
+            idList = [int(ids)]
 
-        idList = [int(i) for i in ids]
         failed = []
 
         for id in idList:

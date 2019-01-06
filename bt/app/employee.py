@@ -148,8 +148,11 @@ class Emplyoee_cl(object):
 
     @cherrypy.tools.json_out()
     def DELETE(self, ids):
+        if isinstance(ids, list):
+            idList = [int(i) for i in ids]
+        else:
+            idList = [int(ids)]
 
-        idList = [int(i) for i in ids]
         failed = []
 
         for id in idList:
