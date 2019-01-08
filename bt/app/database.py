@@ -866,7 +866,7 @@ class Database_cl(object):
             'employee':  employee,
             'type': 'erkannt',
             'components': components,
-            'myCategories': categories,
+            'categories': categories,
             'result': -1
         }
 
@@ -932,7 +932,7 @@ class Database_cl(object):
                 entry['desc'] = desc
                 entry['employee'] = employee
                 entry['components'] = components
-                entry['myCategories'] = categories
+                entry['categories'] = categories
             print (entry)
 
         # Save the complete dictionary to the file
