@@ -1,0 +1,59 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Fehlerübersicht</h2>
+</div>
+<div class="content-body">
+    <table id="list" class="table-list">
+        <thead class="table-head">
+        <tr>
+            <th><!--Icon if it was solved or not--></th>
+            <th class="clickable">Status</th>
+            <th>Bezeichnung</th>
+            <th>QS-Mitarbeiter</th>
+            <th class="clickable">Datum</th>
+            <th>Komponente</th>
+            <th>Kategorien</th>
+        </tr>
+        </thead>
+        @let errors = context;@
+        @let index;@
+        @let secIndex;@
+        @let error;@
+        <tbody class="table-body">
+        @for index = 0; index < errors.length; index++@
+        @error = errors[index];@
+        <tr data-id="#error.id#">
+            <td><span class="dot dot-#error.type#"></span></td>
+            <td>#error.type#</td>
+            <td>#error.desc#</td>
+            <td>#error.employee#</td>
+            <td>#error.date#</td>
+            <td>#error.component#</td>
+            <td>
+                @for secIndex = 0; secIndex < (error.categories.length - 1); secIndex++@
+                #error.categories[secIndex]#,
+                @endfor@
+                #error.categories[error.categories.length - 1]#
+            </td>
+        </tr>
+        @endfor@
+        </tbody>
+        <tfoot class="table-foot">
+        <tr>
+            <th><!--Icon if it was solved or not--></th>
+            <th>Status</th>
+            <th>Bezeichnung</th>
+            <th>QS-Mitarbeiter</th>
+            <th>Datum</th>
+            <th>Komponente</th>
+            <th>Kategorien</th>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="content-footer">
+    <button class='green' data-action="add">Neuen Fehler anlegen</button>
+    <button class='blue disabled' data-action="view" disabled>Fehler ansehen</button>
+    <button class='disabled' data-action="edit" disabled>Fehler bearbeiten</button>
+</div>
+<!--EOF-->

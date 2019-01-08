@@ -1,0 +1,54 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Fehlerübersicht</h2>
+</div>
+<div class="content-body">
+    <p>
+        <strong>Beschreibung</strong>: <br/>
+        #context[0].desc#<br/>
+        <br/>
+        Datum: #context[0].date#
+    </p>
+    <hr/>
+    <p>
+        Komponente: #context[0].component# <br/>
+        Kategorien:
+
+        @let index;@
+        @if context[0].categories.length > 0@
+        @for index = 0; index < (context[0].categories.length - 1); index++@
+        #context[0].categories[index]#,
+        @endfor@
+        #context[0].categories[context[0].categories.length - 1]#
+        @endif@
+    </p>
+    <hr/>
+    <p>Status: #context[0].type#<br/>
+        Mitarbeiter: #context[0].employee#
+    </p>
+
+    @if context[1].type !== true@
+    <hr/>
+    <h3>Lösung</h3>
+    <p>Datum: #context[1].date#<br/>
+        Mitarbeiter: #context[1].employee#</p>
+    <hr/>
+    <p><strong>Beschreibung</strong>:<br/>
+        #context[1].desc#</p>
+    <hr/>
+    @if context[1].categories.length > 0@
+    <p>Kategorien:
+        @for index = 0; index < (context[1].categories.length - 1); index++@
+        #context[1].categories[index]#,
+        @endfor@
+        #context[1].categories[context[1].categories.length - 1]#</p>
+    @endif@
+    @endif@
+</div>
+<div class="content-footer" data-id="#context[0].id#">
+    <button data-action="edit">Bearbeiten</button>
+    @if context[1].type === true@
+    <button class="blue" data-action="create-result" id="result">Lösung hinzufügen</button>
+    @endif@
+</div>
+<!--EOF-->

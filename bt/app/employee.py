@@ -82,7 +82,6 @@ class SoftwareDeveloper_Cl(object):
                    },
         raise cherrypy.HTTPError(404, "Software Entwickler wurde nicht gefunden")
 
-
 # ------------------------------------------------
 class QualityManagement_Cl(object):
     exposed = True
@@ -133,7 +132,6 @@ class QualityManagement_Cl(object):
                 "message": "Qualitatsmitarbeiter erfolgreich gelöscht"
             }
         raise cherrypy.HTTPError(404, "Qualitatsmitarbeiter wurde nicht gefunden")
-
 
 # -------------------------------------------------
 class Emplyoee_cl(object):

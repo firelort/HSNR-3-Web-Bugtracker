@@ -29,7 +29,6 @@ komponente/?id=id         Komponente  Komponente                 Komponente
                           liefern     updaten                    loeschen
 """
 
-
 class Project_cl(object):
     exposed = True
 
@@ -99,8 +98,6 @@ class Project_cl(object):
                 "message": "Alle Projekte erfolgreich gelöscht!"
             }
 
-
-
 class ProjectComponent_Cl(object):
     exposed = True
 
@@ -120,7 +117,6 @@ class ProjectComponent_Cl(object):
                 data.append(component)
         # Return the array / all components a project has
         return data
-
 
 class Component_Cl(object):
     exposed = True
@@ -144,22 +140,20 @@ class Component_Cl(object):
         # Return an error as json
         raise cherrypy.HTTPError(404, "Es existiert keine Komponente mit dieser ID")
 
-    # todo: projects should be an array
-
     # Create a new component and return its id as json
     @cherrypy.tools.json_out()
-    def POST(self, name, desc, projects):
-        id = self.db.createComponent(name, desc, projects)
+    def POST(self, name, desc, project):
+        id = self.db.createComponent(name, desc, project)
         if not id is None:
             return {
                 "id": id
             }
-        raise cherrypy.HTTPError(400, "Es existieren angebene Projekte nicht")
+        raise cherrypy.HTTPError(400, "Das angebene Projekt existiert nicht")
 
     # Update the component of the given id and return the success
     @cherrypy.tools.json_out()
-    def PUT(self, id, name, desc, projects):
-        code = self.db.updateComponent(id=id, name=name, desc=desc, projectids=projects)
+    def PUT(self, id, name, desc, project):
+        code = self.db.updateComponent(id, name, desc, project)
         if code == 0:
             return {
                 "code": 200,
@@ -169,7 +163,7 @@ class Component_Cl(object):
         elif code == 1:
             raise cherrypy.HTTPError(404, "Komponente wurde nicht gefunden")
         else:
-            raise cherrypy.HTTPError(404, "Es existieret mindestens ein angebenes Projekt nicht")
+            raise cherrypy.HTTPError(404, "Das angebene Projekt existiert nicht")
 
     # Delete the component of the given and return the success
     @cherrypy.tools.json_out()

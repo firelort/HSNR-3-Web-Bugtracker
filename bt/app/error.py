@@ -35,6 +35,10 @@ katursache/             Alle                -                 Ein neue          
 katursache/id           Ein                 Ein               -                  Ein
 katursache/?id=id       Lösungskategorien   Lösungskategorien                    Lösungskategorien
                         liefern             updaten                              loeschen
+---------------------------------------------------------------------------------------------------
+loesung/id              Eine
+loesung/?id=id          Lösung
+                        liefern
 """
 
 
@@ -173,13 +177,20 @@ class ErrorCategories_Cl(object):
                 "message": "Alle Komponenten erfolgreich gelöscht!"
             }
 
-
 class Result_Cl(object):
     exposed = True
 
     def __init__(self, path):
         self.db = Database_cl(path)
 
+    @cherrypy.tools.json_out()
+    def GET(self, id):
+        data = self.db.getResultById(id)
+        if data is None:
+            # The given ID wasn't valid
+            raise cherrypy.HTTPError(404, "Es existiert kein Fehler mit dieser ID")
+            # The given ID was valid
+        return data
 
 class ResultCategories_Cl(object):
     exposed = True

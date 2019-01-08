@@ -13,14 +13,10 @@
         </tr>
         </thead>
         <tbody>
-        @let index;@
-        @let projects = context.project@
-        @for index = 0; index < projects.length; index++@
         <tr class="not-hoverable">
-            <td>#projects[index].id#</td>
-            <td>#projects[index].name#</td>
+            <td>#context.project.id#</td>
+            <td>#context.project.name#</td>
         </tr>
-        @endfor@
         </tbody>
     </table>
 </div>

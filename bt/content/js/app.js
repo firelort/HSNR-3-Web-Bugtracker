@@ -205,6 +205,9 @@ class Application_cl {
                             case "category":
                                 self.categoryAdd_o.render_px();
                                 break;
+                            case "result":
+                                console.log("Lösung", data_opl[2]);
+                                break;
                         }
                         break;
                 }

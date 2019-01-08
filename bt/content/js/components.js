@@ -21,7 +21,6 @@ class Components_cl {
         } else {
             path_s = "/projektkomponenten/?id=" + id;
         }
-
         let secondPromise = new Promise(function (resolve, reject) {
             requester_o.get_px(path_s,
                 function (responseText_spl) {
@@ -44,14 +43,8 @@ class Components_cl {
 
             let components = value[1];
             for (let compIndex = 0; compIndex < components.length; compIndex++) {
-                let component = components[compIndex];
-                let projects = component.project;
-                for (let projectIndex = 0; projectIndex < projects.length; projectIndex++) {
-                    let project = projects[projectIndex];
-                    value[1][compIndex].project[projectIndex] = projectNameArray[project];
-                }
+                value[1][compIndex].project = projectNameArray[value[1][compIndex].project];
             }
-
             this.doRender(value);
         });
 
@@ -186,13 +179,12 @@ class ComponentView_cl {
         });
 
         Promise.all([firstPromise, secondPromise]).then(value => {
-
+            console.log(value);
             let component = value[0];
             let projects = value[1];
             for (let index = 0; index < projects.length; index++) {
-                let arrIndex = component.project.findIndex(element => element === projects[index].id);
-                if (arrIndex >= 0) {
-                    component.project[arrIndex] = {
+                if (projects[index].id == component.project) {
+                    component.project = {
                         "id": projects[index].id,
                         "name": projects[index].name
                     };

@@ -201,14 +201,13 @@ class Database_cl(object):
         # Set the data array as the new projects array in the "jsonFile"
         jsonFILE['projects'] = data
 
-        # Remove the project id from the different components
-        for componentId in components:
-            for entry in jsonFILE['components']:
-                if componentId == entry['id']:
-                    entry['project'].remove(int(id))
-
         # save the new json file to disk
         self.writeJSONFile('project', jsonFILE)
+
+        # Remove the project id from the different components
+        for componentId in components:
+            print (componentId)
+            self.deleteComponent(componentId, True)
         return True
 
     # -------------------- Component Function
@@ -232,26 +231,28 @@ class Database_cl(object):
         return None
 
     # Create a new component
-    def createComponent(self, name, desc, projectids):
+    def createComponent(self, name, desc, projectid):
         # Get the whole content of the project file
         data = self.readJSONFile('project')
 
         # Get the id for the new component
         newId = data['maxCompId'] + 1
 
-        # Test if projectids is an int or an array
-        try:
-            len(projectids)
-            projects = [int(i) for i in projectids]
-        except TypeError:
-            projects = [projectids]
+        # Test if projectid is an int
+        if not self.isNumber(projectid):
+            return None
+
+        # Test if the project exists
+        if not self.getProjectById(projectid):
+            return None
 
         # Create a new Entry
         newEntry = {
             "id": newId,
             "name": name,
             "desc": desc,
-            "project": projects
+            "project": int(projectid),
+            "errors": []
         }
 
         # Append the component array with the new entry
@@ -260,27 +261,34 @@ class Database_cl(object):
         # Set the new maxCompId
         data['maxCompId'] = newId
 
-        success = True
         # Add the component to the project component array
-        for id in projects:
-            exists = False
-            for entry in data['projects']:
-                if int(id) == entry['id']:
-                    entry['component'].append(int(newId))
-                    exists = True
-                    break
-            if not exists:
-                success = False
+        for entry in data['projects']:
+            if int(projectid) == entry['id']:
+                entry['component'].append(int(newId))
                 break
 
-        if not success:
-            return None
         # save all changes to the json file
         self.writeJSONFile('project', data)
         return newId
 
+    # Add a error to an component
+    def addErrorToCoponent(self, componentid, errorid):
+        data = self.readJSONFile('project')
+        if not self.isNumber(componentid):
+            return False
+
+        if not self.isNumber(errorid):
+            return False
+
+        for entry in data['components']:
+            if entry['id'] == int(componentid):
+                entry['errors'].append(errorid)
+                return True
+
+        return False
+
     # Update the component with the given id
-    def updateComponent(self, id, name, desc, projectids):
+    def updateComponent(self, id, name, desc, projectid):
         # Check if the id is an int value
         if not self.isNumber(id):
             return 1
@@ -289,48 +297,33 @@ class Database_cl(object):
         if self.getComponentById(id) is None:
             return 1
 
+        if not self.isNumber(projectid):
+            return 2
+
+        if not self.getProjectById(projectid):
+            return 2
+
         # Read the project json File
         data = self.readJSONFile('project')
-
-        # Test if project ids is an int value or an array
-        try:
-            len(projectids)
-            projects = [int(i) for i in projectids]
-        except:
-            projects = [projectids]
 
         # Find the searched components and replace the information
         for entry in data['components']:
             if entry['id'] == int(id):
                 entry['name'] = name
                 entry['desc'] = desc
-                oldProjects = entry['project']
-                entry['project'] = projects
+                oldProject = entry['project']
+                entry['project'] = int(projectid)
                 break
 
-        # Delete the component from all projects
-        for projectId in oldProjects:
+        if projectid != oldProject:
             for entry in data['projects']:
-                if int(projectId) == entry['id']:
+                if oldProject == entry['id']:
                     entry['component'].remove(int(id))
                     break
 
-        # Add the component to the new projects
-        success = True
-        # Add the component to the project component array
-        for projectId in projects:
-            exists = False
             for entry in data['projects']:
-                if int(projectId) == entry['id']:
+                if int(projectid) == entry['id']:
                     entry['component'].append(int(id))
-                    exists = True
-                    break
-            if not exists:
-                success = False
-                break
-
-        if not success:
-            return 2
 
         # Save the json to the file
         self.writeJSONFile('project', data)
@@ -338,7 +331,7 @@ class Database_cl(object):
 
     # Delete the component with the given id
     # and remove the id from the projects
-    def deleteComponent(self, id):
+    def deleteComponent(self, id, skip=False):
         # Check if the given id is an int value
         if not self.isNumber(id):
             return False
@@ -356,22 +349,28 @@ class Database_cl(object):
             if not entry['id'] == int(id):
                 components.append(entry)
             else:
-                projects = entry['project']
+                project = entry['project']
+                errors = entry['errors']
         data['components'] = components
 
         # Remove the component id from the projects
-        for projectEntry in data['projects']:
-            for value in projects:
-                if projectEntry['id'] == value:
+        if not skip:
+            for projectEntry in data['projects']:
+                if projectEntry['id'] == project:
                     projectEntry['component'].remove(int(id))
 
         # Save the changes to the file
         self.writeJSONFile('project', data)
+
+        # todo: Delete the errors connected to the component
+        for errorid in errors:
+            print (errorid)
         return True
+
     # -------------------- Role Function
     def getAllRoles(self):
         return self.readJSONFile('employee')['roles']
-    
+
     # -------------------- Employee Function
     def getAllEmployees(self):
         # return all employees
@@ -594,7 +593,7 @@ class Database_cl(object):
         # Create a new entry
         newEntry = {
             "id": newId,
-            "name":  name,
+            "name": name,
             "error": []
         }
 
@@ -812,7 +811,10 @@ class Database_cl(object):
 
         return result
 
-    def createNewError(self, desc, employee, components, categories):
+    def createNewError(self, desc, employee, component, categories):
+        if not self.isNumber(component):
+            return -4
+
         # Get the dict of the error file
         dictionary = self.readJSONFile('error')
 
@@ -838,10 +840,8 @@ class Database_cl(object):
         for entry in componentDict:
             compList.append(entry['id'])
 
-
-        for component in components:
-            if not int(component) in compList:
-                return -2
+        if not int(component) in compList:
+            return -2
 
         # Check if the given employee is valid
         employees = self.getAllQualityManagement()
@@ -855,7 +855,6 @@ class Database_cl(object):
             return -3
 
         # Convert the string arrays to an int arrays
-        components = [int(i) for i in components]
         categories = [int(i) for i in categories]
 
         # Create new Entry
@@ -863,9 +862,9 @@ class Database_cl(object):
             'id': id,
             'desc': desc,
             'date': datetime.datetime.now().strftime('%d.%m.%Y - %H:%M'),
-            'employee':  employee,
+            'employee': employee,
             'type': 'erkannt',
-            'components': components,
+            'component': int(component),
             'categories': categories,
             'result': -1
         }
@@ -879,10 +878,13 @@ class Database_cl(object):
         # Return the ID of the new error
         return id
 
-    def updateError(self, id, desc, employee, components, categories):
+    def updateError(self, id, desc, employee, component, categories):
         # Test if a error with the id exists
         if self.getErrorById(id) is None:
             return -4
+
+        if not self.isNumber(component):
+            return -5
 
         # Get the dict of the error file
         dictionary = self.readJSONFile('error')
@@ -905,9 +907,8 @@ class Database_cl(object):
         for entry in componentDict:
             compList.append(entry['id'])
 
-        for component in components:
-            if not int(component) in compList:
-                return -2
+        if not int(component) in compList:
+            return -2
 
         # Check if the given employee is valid
         employees = self.getAllQualityManagement()
@@ -921,7 +922,6 @@ class Database_cl(object):
             return -3
 
         # Convert the string arrays to an int arrays
-        components = [int(i) for i in components]
         categories = [int(i) for i in categories]
 
         # Find the error with the given id
@@ -931,7 +931,7 @@ class Database_cl(object):
                 # Change the content of the error
                 entry['desc'] = desc
                 entry['employee'] = employee
-                entry['components'] = components
+                entry['component'] = int(component)
                 entry['categories'] = categories
             print (entry)
 
@@ -941,5 +941,25 @@ class Database_cl(object):
         # Return the ID of the new error
         return True
 
+    def deleteError(self, id):
+        #todo: delete the result and delete me from the category array
+        return 1
     # ----------------------- Result Function
+
+    def getAllResult(self):
+        return self.readJSONFile('error')['results']
+
+    def getResultById(self, id):
+        # Check if the given id is an int
+        if not self.isNumber(id):
+            return None
+
+        # Only read the error dict
+        data = self.getAllResult()
+
+        # Check all entrys if one entry has the searched id and return it
+        for entry in data:
+            if int(id) == entry['id']:
+                return entry
+        return None
 # EOF

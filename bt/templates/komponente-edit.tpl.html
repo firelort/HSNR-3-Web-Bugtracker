@@ -15,11 +15,11 @@
         <input type="text" id="name" name="name" value="#component.name#"/>
         <label for="desc">Beschreibung</label>
         <textarea id="desc" name="desc">#component.desc#</textarea>
-        <select multiple name="projects">
+        <select name="project">
             @let index;@
             @for index = 0; index < projects.length; index++@
             @let project = projects[index];@
-            @if component.project.includes(project.id)@
+            @if component.project === project.id@
             <option value="#project.id#" selected>#project.name#</option>
             @else@
             <option value="#project.id#">#project.name#</option>

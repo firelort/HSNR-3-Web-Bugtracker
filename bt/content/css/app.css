@@ -267,3 +267,23 @@ textarea {
     font-size: 16px;
     resize: none;
 }
+
+.dot {
+    height: 10px;
+    width: 10px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-erkannt {
+    background-color: #008CBA;
+}
+
+.dot-behoben {
+    background-color: #4CAF50;
+}
+
+.dot-anderes {
+    background-color: #f44336;
+}
