@@ -572,33 +572,197 @@ class Database_cl(object):
         return self.readJSONFile('error')['errorCat']
 
     def getErrorCategoryById(self, id):
-        return 1
+        if not self.isNumber(id):
+            return None
 
-    def createErrorCategory(self):
-        return 1
+        # Only read the category dict
+        data = self.getAllErrorCategories()
 
-    def updateErrorCategory(self, id):
-        return 1
+        # Check all entrys if one entry has the searched id return it
+        for entry in data:
+            if int(id) == entry['id']:
+                return entry
+        return None
+
+    def createErrorCategory(self, name):
+        # Get the whole content of the project file
+        data = self.readJSONFile('error')
+
+        # Calc the new id
+        newId = data['errMaxId'] + 1
+
+        # Create a new entry
+        newEntry = {
+            "id": newId,
+            "name":  name,
+            "error": []
+        }
+
+        # Append the entry to the catError Array
+        data['errorCat'].append(newEntry)
+
+        # Set the new maxId
+        data['errMaxId'] = newId
+
+        # Save all changes to file
+        self.writeJSONFile('error', data)
+        return newId
+
+    def updateErrorCategory(self, id, name):
+        # Check if the provided id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if the searched project exist
+        if self.getErrorCategoryById(id) is None:
+            return False
+
+        # Get the current file
+        data = self.readJSONFile('error')
+
+        # find the searched project and replace the information
+        for entry in data['errorCat']:
+            if entry['id'] == int(id):
+                entry['name'] = name
+                break
+
+        # save the new data to the file
+        self.writeJSONFile('error', data)
+        return True
 
     def deleteErrorCategory(self, id):
-        return 1
+        # Check if the provided id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if the searched project exist
+        if self.getErrorCategoryById(id) is None:
+            return False
+
+        # get the current file/projects
+        jsonFILE = self.readJSONFile('error')
+        # Create an array to save errorCat which should not be deleted
+        data = []
+
+        # Iterate only through the errorCat array of the projects
+        for entry in jsonFILE['errorCat']:
+            # Save all errorCat in the data array, but not the errorCat with the given id
+            if not entry['id'] == int(id):
+                data.append(entry)
+            else:
+                errors = entry['error']
+
+        # Set the data array as the new errorCat array in the "jsonFile"
+        jsonFILE['errorCat'] = data
+        # Remove the errorCat id from the different errors
+        for errorId in errors:
+            for entry in jsonFILE['errors']:
+                if errorId == entry['id']:
+                    entry['categories'].remove(int(id))
+
+        # Save the new json file to disk
+        self.writeJSONFile('error', jsonFILE)
+        return True
 
     # -------------------- Result Category
 
     def getAllResultCategories(self):
-        return 1
+        return self.readJSONFile('error')['resultCat']
 
     def getResultCategoryById(self, id):
-        return 1
+        if not self.isNumber(id):
+            return None
 
-    def createResultCateogry(self):
-        return 1
+        # Only read the category dict
+        data = self.getAllResultCategories()
 
-    def updateResultCategory(self, id):
-        return 1
+        # Check all entrys if one entry has the searched id return it
+        for entry in data:
+            if int(id) == entry['id']:
+                return entry
+        return None
+
+    def createResultCateogry(self, name):
+        # Get the whole content of the project file
+        data = self.readJSONFile('error')
+
+        # Calc the new id
+        newId = data['resMaxId'] + 1
+
+        # Create a new entry
+        newEntry = {
+            "id": newId,
+            "name": name,
+            "result": []
+        }
+
+        # Append the entry to the catError Array
+        data['resultCat'].append(newEntry)
+
+        # Set the new maxId
+        data['resMaxId'] = newId
+
+        # Save all changes to file
+        self.writeJSONFile('error', data)
+        return newId
+
+    def updateResultCategory(self, id, name):
+        # Check if the provided id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if the searched project exist
+        if self.getResultCategoryById(id) is None:
+            return False
+
+        # Get the current file
+        data = self.readJSONFile('error')
+
+        # find the searched project and replace the information
+        for entry in data['resultCat']:
+            if entry['id'] == int(id):
+                entry['name'] = name
+                break
+
+        # save the new data to the file
+        self.writeJSONFile('error', data)
+        return True
 
     def deleteResultCategory(self, id):
-        return 1
+        # Check if the provided id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if the searched project exist
+        if self.getResultCategoryById(id) is None:
+            return False
+
+        # get the current file/projects
+        jsonFILE = self.readJSONFile('error')
+
+        # Create an array to save errorCat which should not be deleted
+        data = []
+
+        # Iterate only through the errorCat array of the projects
+        for entry in jsonFILE['resultCat']:
+            # Save all errorCat in the data array, but not the errorCat with the given id
+            if not entry['id'] == int(id):
+                data.append(entry)
+            else:
+                results = entry['result']
+
+        # Set the data array as the new errorCat array in the "jsonFile"
+        jsonFILE['resultCat'] = data
+
+        # Remove the errorCat id from the different errors
+        for resultId in results:
+            for entry in jsonFILE['results']:
+                if resultId == entry['id']:
+                    entry['categories'].remove(int(id))
+
+        # Save the new json file to disk
+        self.writeJSONFile('error', jsonFILE)
+        return True
 
     # -------------------- Error Functions
 
@@ -702,7 +866,7 @@ class Database_cl(object):
             'employee':  employee,
             'type': 'erkannt',
             'components': components,
-            'categories': categories,
+            'myCategories': categories,
             'result': -1
         }
 
@@ -768,7 +932,7 @@ class Database_cl(object):
                 entry['desc'] = desc
                 entry['employee'] = employee
                 entry['components'] = components
-                entry['categories'] = categories
+                entry['myCategories'] = categories
             print (entry)
 
         # Save the complete dictionary to the file
