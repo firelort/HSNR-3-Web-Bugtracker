@@ -1,0 +1,38 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Kategorienübersicht</h2>
+</div>
+<div class="content-body">
+    <table id="list" class="table-list">
+        <thead class="table-head">
+        <tr>
+            <th class="clickable">Bezeichnung</th>
+            <th class="clickable">Type</th>
+        </tr>
+        </thead>
+        <tbody class="table-body">
+        @let index;@
+        @let category;@
+        @for index = 0; index < context.length; index++@
+        @category = context[index]@
+        <tr data-roleid="#category.roleid#" data-id="#category.id#">
+            <td>#category.name#</td>
+            <td>#category.type#</td>
+        </tr>
+        @endfor@
+        </tbody>
+        <tfoot class="table-foot">
+        <tr>
+            <th>Bezeichnung</th>
+            <th>Type</th>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="content-footer">
+    <button class='green' data-action="add">Neuen Kategorie anlegen</button>
+    <button class='blue disabled' data-action="view" disabled>Kategorie ansehen</button>
+    <button class='disabled' data-action="edit" disabled>Kategorie bearbeiten</button>
+    <button class='red disabled' data-action="delete" disabled>Kategorie löschen</button>
+</div>
+<!--EOF-->

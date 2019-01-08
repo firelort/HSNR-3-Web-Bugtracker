@@ -26,6 +26,16 @@ class Application_cl {
         this.componentEdit_o = new ComponentEdit_cl();
         this.componentAdd_o = new ComponentAdd_cl("main", "komponente-edit.tpl.html");
 
+        this.errorList_o = new Errors_cl();
+        this.errorView_o = new ErrorView_cl();
+        this.errorEdit_o = new ErrorEdit_cl();
+        this.errorAdd_o = new ErrorAdd_cl("main", "komponente-edit.tpl.html");
+
+        this.categoryList_o = new Categories_cl();
+        this.categoryView_o = new CategoryView_cl();
+        this.categoryEdit_o = new CategoryEdit_cl();
+        this.categoryAdd_o = new CategoryAdd_cl("main", "category-add.tpl.html");
+
         APPUTIL.list_o = new List_cl("main");
         APPUTIL.view_o = new View_cl("main");
         APPUTIL.edit_o = new Edit_cl("main");
@@ -118,20 +128,14 @@ class Application_cl {
                             case "projekt":
                                 self.projectList_o.render_px();
                                 break;
-                            case "projektkomponenten":
-                                console.log(data_opl[1], data_opl);
-                                break;
                             case "komponente":
                                 self.componentList_o.render_px(data_opl[2]);
                                 break;
-                            case "katfehler":
-                                console.log(data_opl[1], data_opl);
+                            case "category":
+                                self.categoryList_o.render_px();
                                 break;
                             case "fehler":
-                                console.log(data_opl[1], data_opl);
-                                break;
-                            case "katursache":
-                                console.log(data_opl[1], data_opl);
+                                self.errorList_o.render_px();
                                 break;
                         }
                         break;
@@ -158,6 +162,12 @@ class Application_cl {
                             case "komponente":
                                 self.componentView_o.render_px(data_opl[2]);
                                 break;
+                            case "fehler":
+                                self.errorView_o.render_px(data_opl[2]);
+                                break;
+                            case "category":
+                                self.categoryView_o.render_px(data_opl[2], data_opl[3]);
+                                break;
                         }
                         break;
                     case "edit-view":
@@ -171,6 +181,11 @@ class Application_cl {
                             case "komponente":
                                 self.componentEdit_o.render_px(data_opl[2]);
                                 break;
+                            case "fehler":
+                                self.errorEdit_o.render_px(data_opl[2]);
+                                break;
+                            case "category":
+                                self.categoryEdit_o.render_px(data_opl[2], data_opl[3]);
                         }
                         break;
                     case "add-item":
@@ -183,6 +198,12 @@ class Application_cl {
                                 break;
                             case "komponente":
                                 self.componentAdd_o.render_px();
+                                break;
+                            case "fehler":
+                                self.errorAdd_o.render_px();
+                                break;
+                            case "category":
+                                self.categoryAdd_o.render_px();
                                 break;
                         }
                         break;

@@ -32,7 +32,7 @@ class Navigation_cl(object):
             "action": "list-view",
             "name": "Pflege Daten Mitarbeiter"
         }, {
-            "target": "katfehler",
+            "target": "category",
             "action": "list-view",
             "name": "Pflege Kategorien"
         }, {

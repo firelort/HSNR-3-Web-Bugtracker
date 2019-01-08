@@ -6,7 +6,7 @@ class Edit_cl {
     }
 
     render_px(template_s, data_o, additionInfo) {
-        if (template_s === "employee") {
+        if (template_s === "employee" || template_s === "category") {
             this.endpoint = additionInfo;
         } else {
             this.endpoint = template_s;

@@ -1,0 +1,17 @@
+<!--Template-Template-->
+@var category = context@
+<div class="content-head">
+    <h2>Kategorieansicht</h2>
+</div>
+<div class="content-body">
+<p>
+    Nummer: #category.id#<br/>
+    Name: #category.name#<br/>
+    Type: #category.type#
+</p>
+</div>
+<div class="content-footer" data-roleid="#category['roleid']#" data-id="#category['id']#">
+    <button data-action="edit">Bearbeiten</button>
+    <button data-action="delete" class="red">Löschen</button>
+</div>
+<!--EOF-->

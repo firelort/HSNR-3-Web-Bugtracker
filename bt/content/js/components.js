@@ -209,7 +209,6 @@ class ComponentEdit_cl {
         let requester_o = new APPUTIL.Requester_cl();
         let path_s = "/projekt/";
         let firstPromise = new Promise(function (resolve, reject) {
-
             requester_o.get_px(path_s,
                 function (responseText_spl) {
                     resolve(JSON.parse(responseText_spl));
