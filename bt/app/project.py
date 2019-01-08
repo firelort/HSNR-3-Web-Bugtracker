@@ -157,6 +157,7 @@ class Component_Cl(object):
         raise cherrypy.HTTPError(400, "Es existieren angebene Projekte nicht")
 
     # Update the component of the given id and return the success
+    @cherrypy.tools.json_out()
     def PUT(self, id, name, desc, projects):
         code = self.db.updateComponent(id=id, name=name, desc=desc, projectids=projects)
         if code == 0:

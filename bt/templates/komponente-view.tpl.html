@@ -1,0 +1,31 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Komponentenübersicht: #context.name#</h2>
+</div>
+<div class="content-body">
+    <p><strong>Beschreibung:</strong><br/>#context.desc#</p>
+    <hr/>
+    <table class="table-list">
+        <thead>
+        <tr>
+            <th>##</th>
+            <th>Bezeichung</th>
+        </tr>
+        </thead>
+        <tbody>
+        @let index;@
+        @let projects = context.project@
+        @for index = 0; index < projects.length; index++@
+        <tr class="not-hoverable">
+            <td>#projects[index].id#</td>
+            <td>#projects[index].name#</td>
+        </tr>
+        @endfor@
+        </tbody>
+    </table>
+</div>
+<div class="content-footer" data-id="#context.id#">
+    <button data-action="edit">Bearbeiten</button>
+    <button data-action="delete" class="red">Löschen</button>
+</div>
+<!--EOF-->

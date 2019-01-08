@@ -1,0 +1,88 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Komponentenübersicht</h2>
+</div>
+<div class="content-body">
+    <select class="switch">
+        <option value="0" selected>Alle Komponenten</option>
+        @let index;@
+        @let projects = context[0];@
+        @let project;@
+        @for index = 0; index < projects.length; index++@
+        @project = projects[index]@
+        @if project.id == context[2]@
+        <option value="#project.id#" selected>#project.name#</option>
+        @else@
+        <option value="#project.id#">#project.name#</option>
+        @endif@
+        @endfor@
+    </select>
+    <button class="blue small" id="selector">Absenden</button>
+
+    @if context[3] === undefined@
+    <!--All-Components-->
+    <table id="list" class="table-list" data-tableid="0">
+        <thead class="table-head">
+        <tr>
+            <th class="clickable">Name</th>
+            <th>Beschreibung</th>
+            <th>Projekte</th>
+        </tr>
+        </thead>
+        <tbody class="table-body">
+        @let components = context[1]@
+        @let component;@
+        @for index = 0; index < components.length; index++@
+        @component = components[index]@
+        <tr data-id="#component.id#">
+            <td>#component.name#</td>
+            <td>#component.desc#</td>
+            <td>#component.project#</td>
+        </tr>
+        @endfor@
+        </tbody>
+        <tfoot class="table-foot">
+        <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>Projekte</th>
+        </tr>
+        </tfoot>
+    </table>
+    @else@
+    <!--Project-Components-->
+    <table id="list" class="table-list" data-tableid="#context[3]#">
+        <thead class="table-head">
+        <tr>
+            <th class="clickable">Name</th>
+            <th>Beschreibung</th>
+        </tr>
+        </thead>
+        <tbody class="table-body">
+        @let components = context[1]@
+        @let component;@
+        @for index = 0; index < components.length; index++@
+        @component = components[index]@
+        <tr data-id="#component.id#">
+            <td>#component.name#</td>
+            <td>#component.desc#</td>
+        </tr>
+        @endfor@
+        </tbody>
+        <tfoot class="table-foot">
+        <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+        </tr>
+        </tfoot>
+    </table>
+    @endif@
+
+</div>
+<div class="content-footer">
+    <button class='green' data-action="add">Neue Komponente anlegen</button>
+    <button class='blue disabled' data-action="view" disabled>Komponente ansehen</button>
+    <button class='disabled' data-action="edit" disabled>Komponente bearbeiten</button>
+    <button class='red disabled' data-action="delete" disabled>Komponenten löschen</button>
+</div>
+<!--EOF-->

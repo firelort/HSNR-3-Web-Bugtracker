@@ -32,7 +32,6 @@ class Application_cl {
     }
 
     notify_px(self, message_spl, data_opl) {
-        console.log(message_spl, data_opl);
         switch (message_spl) {
             case "templates.failed":
                 alert("Vorlagen konnten nicht geladen werden.");
@@ -62,9 +61,11 @@ class Application_cl {
                     event.stopPropagation();
                     document.querySelector('#success-box').setAttribute("hidden", '');
                 });
+
                 break;
 
             case "app.cmd":
+                console.log(data_opl);
                 //Skip the test if data_opl[10] is true
                 if (data_opl[10] !== true) {
                     // hier müsste man überprüfen, ob der Inhalt gewechselt werden darf
@@ -120,8 +121,8 @@ class Application_cl {
                             case "projektkomponenten":
                                 console.log(data_opl[1], data_opl);
                                 break;
-                            case "komponenten":
-                                self.componentList_o.render_px();
+                            case "komponente":
+                                self.componentList_o.render_px(data_opl[2]);
                                 break;
                             case "katfehler":
                                 console.log(data_opl[1], data_opl);
@@ -154,6 +155,9 @@ class Application_cl {
                             case "projekt":
                                 self.projectView_o.render_px(data_opl[2]);
                                 break;
+                            case "komponente":
+                                self.componentView_o.render_px(data_opl[2]);
+                                break;
                         }
                         break;
                     case "edit-view":
@@ -164,6 +168,9 @@ class Application_cl {
                             case "projekt":
                                 self.projectEdit_o.render_px(data_opl[2]);
                                 break;
+                            case "komponente":
+                                self.componentEdit_o.render_px(data_opl[2]);
+                                break;
                         }
                         break;
                     case "add-item":
@@ -173,6 +180,10 @@ class Application_cl {
                                 break;
                             case "projekt":
                                 self.projectAdd_o.render_px();
+                                break;
+                            case "komponente":
+                                self.componentAdd_o.render_px();
+                                break;
                         }
                         break;
                 }

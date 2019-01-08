@@ -1,8 +1,4 @@
 class Projects_cl {
-    constructor() {
-
-    }
-
     render_px() {
         // Request the projectlist
         let path_s = "/projekt/";

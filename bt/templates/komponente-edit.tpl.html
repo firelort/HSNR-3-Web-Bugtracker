@@ -1,0 +1,35 @@
+<!--Template-Template-->
+<div class="content-head">
+    @let component = context[1]@
+    @let projects = context[0]@
+    @if component.type !== true@
+    <h2>Komponente bearbeiten</h2>
+    @else@
+    <h2>Komponente erstellen</h2>
+    @endif@
+</div>
+<div class="content-body">
+    <form class="page" id="komponente-form">
+        <input type="hidden" name="id" value="#component.id#"/>
+        <label>Name</label>
+        <input type="text" id="name" name="name" value="#component.name#"/>
+        <label for="desc">Beschreibung</label>
+        <textarea id="desc" name="desc">#component.desc#</textarea>
+        <select multiple name="projects">
+            @let index;@
+            @for index = 0; index < projects.length; index++@
+            @let project = projects[index];@
+            @if component.project.includes(project.id)@
+            <option value="#project.id#" selected>#project.name#</option>
+            @else@
+            <option value="#project.id#">#project.name#</option>
+            @endif@
+            @endfor@
+        </select>
+    </form>
+</div>
+<div class="content-footer">
+    <button class="blue" data-action="save">Absenden</button>
+    <button data-action="cancel">Zurück</button>
+</div>
+<!--EOF-->
