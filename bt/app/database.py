@@ -2,6 +2,7 @@ import os
 import json
 import datetime
 
+
 class Database_cl(object):
     def __init__(self, path):
         self.path_s = os.path.join(path, "data")
@@ -206,7 +207,6 @@ class Database_cl(object):
 
         # Remove the project id from the different components
         for componentId in components:
-            print (componentId)
             self.deleteComponent(componentId, True)
         return True
 
@@ -364,7 +364,8 @@ class Database_cl(object):
 
         # todo: Delete the errors connected to the component
         for errorid in errors:
-            print (errorid)
+            self.deleteError(errorid)
+
         return True
 
     # -------------------- Role Function
@@ -588,7 +589,7 @@ class Database_cl(object):
         data = self.readJSONFile('error')
 
         # Calc the new id
-        newId = data['errMaxId'] + 1
+        newId = data['errCatMaxId'] + 1
 
         # Create a new entry
         newEntry = {
@@ -601,7 +602,7 @@ class Database_cl(object):
         data['errorCat'].append(newEntry)
 
         # Set the new maxId
-        data['errMaxId'] = newId
+        data['errCatMaxId'] = newId
 
         # Save all changes to file
         self.writeJSONFile('error', data)
@@ -686,7 +687,7 @@ class Database_cl(object):
         data = self.readJSONFile('error')
 
         # Calc the new id
-        newId = data['resMaxId'] + 1
+        newId = data['resCatMaxId'] + 1
 
         # Create a new entry
         newEntry = {
@@ -699,7 +700,7 @@ class Database_cl(object):
         data['resultCat'].append(newEntry)
 
         # Set the new maxId
-        data['resMaxId'] = newId
+        data['resCatMaxId'] = newId
 
         # Save all changes to file
         self.writeJSONFile('error', data)
@@ -812,8 +813,36 @@ class Database_cl(object):
         return result
 
     def createNewError(self, desc, employee, component, categories):
+        # Test if the component exists
         if not self.isNumber(component):
-            return -4
+            return -1
+
+        if self.getComponentById(component) is None:
+            return -1
+
+        # Test if the employee exists
+        if not self.isNumber(employee):
+            return -2
+
+        if self.getQualityManagementById(employee) is None:
+            return -2
+
+        # idList is int array
+        if isinstance(categories, list):
+            try:
+                idList = [int(i) for i in categories]
+            except:
+                return -3
+        else:
+            try:
+                idList = [int(categories)]
+            except:
+                return -3
+
+        # Test if all categories exists
+        for categoryID in idList:
+            if self.getErrorCategoryById(categoryID) is None:
+                return -3
 
         # Get the dict of the error file
         dictionary = self.readJSONFile('error')
@@ -822,128 +851,150 @@ class Database_cl(object):
         id = dictionary['errMaxId'] + 1
         dictionary['errMaxId'] = id
 
-        # Check if the given categories are valid
-        # Get all category IDS
-        catList = []
-        for entry in dictionary['errorCat']:
-            catList.append(entry['id'])
-
-        # Test if the given id is in the array
-        for category in categories:
-            if not int(category) in catList:
-                return -1
-
-        # Check if the given components are valid
-        componentDict = self.getAllComponents()
-        compList = []
-
-        for entry in componentDict:
-            compList.append(entry['id'])
-
-        if not int(component) in compList:
-            return -2
-
-        # Check if the given employee is valid
-        employees = self.getAllQualityManagement()
-
-        empList = []
-
-        for data in employees:
-            empList.append(data['id'])
-
-        if not employee in empList:
-            return -3
-
-        # Convert the string arrays to an int arrays
-        categories = [int(i) for i in categories]
-
         # Create new Entry
         entry = {
             'id': id,
             'desc': desc,
             'date': datetime.datetime.now().strftime('%d.%m.%Y - %H:%M'),
-            'employee': employee,
+            'employee': int(employee),
             'type': 'erkannt',
             'component': int(component),
-            'categories': categories,
+            'categories': idList,
             'result': -1
         }
 
         # Append the new entry to the error array
         dictionary['errors'].append(entry)
 
+        for catEntry in idList:
+            for entry in dictionary['errorCat']:
+                if int(catEntry) == int(entry['id']):
+                    entry['error'].append(int(id))
+                    break
+
         # Save the complete dictionary to the file
         self.writeJSONFile('error', dictionary)
+
+        # Add the error to the component
+        componentDict = self.readJSONFile('project')
+        for entry in componentDict['components']:
+            if entry['id'] == int(component):
+                entry['errors'].append(int(id))
+        self.writeJSONFile('project', componentDict)
 
         # Return the ID of the new error
         return id
 
     def updateError(self, id, desc, employee, component, categories):
         # Test if a error with the id exists
+        if not self.isNumber(id):
+            return 1
         if self.getErrorById(id) is None:
-            return -4
+            return 1
 
+        # Test if the component exists
         if not self.isNumber(component):
-            return -5
+            return 2
+
+        if self.getComponentById(component) is None:
+            return 2
+
+        # Test if the employee exists
+        if not self.isNumber(employee):
+            return 3
+
+        if self.getQualityManagementById(employee) is None:
+            return 3
+
+        # idList is int array
+        if isinstance(categories, list):
+            try:
+                idList = [int(i) for i in categories]
+            except:
+                return 4
+        else:
+            try:
+                idList = [int(categories)]
+            except:
+                return 4
+
+        # Test if all categories exists
+        for categoryID in idList:
+            if self.getErrorCategoryById(categoryID) is None:
+                return 4
 
         # Get the dict of the error file
         dictionary = self.readJSONFile('error')
-
-        # Check if the given categories are valid
-        # Get all category IDS
-        catList = []
-        for entry in dictionary['errorCat']:
-            catList.append(entry['id'])
-
-        # Test if the given id is in the array
-        for category in categories:
-            if not int(category) in catList:
-                return -1
-
-        # Check if the given components are valid
-        componentDict = self.getAllComponents()
-        compList = []
-
-        for entry in componentDict:
-            compList.append(entry['id'])
-
-        if not int(component) in compList:
-            return -2
-
-        # Check if the given employee is valid
-        employees = self.getAllQualityManagement()
-        print (employees)
-        empList = []
-
-        for data in employees:
-            empList.append(data['id'])
-
-        if not int(employee) in empList:
-            return -3
-
-        # Convert the string arrays to an int arrays
-        categories = [int(i) for i in categories]
-
-        # Find the error with the given id
-        for entry in dictionary['errors']:
+        errorDictionary = dictionary['errors']
+        # Save the new data, after copying old employee, component and categories
+        for entry in errorDictionary:
             if entry['id'] == int(id):
-                print(id)
-                # Change the content of the error
+                oldComponent = entry['component']
+                oldCategories = entry['categories']
                 entry['desc'] = desc
-                entry['employee'] = employee
+                entry['employee'] = int(employee)
                 entry['component'] = int(component)
-                entry['categories'] = categories
-            print (entry)
+                entry['categories'] = idList
+                break
 
-        # Save the complete dictionary to the file
+        # Save Data to file
+        dictionary['errors'] = errorDictionary
         self.writeJSONFile('error', dictionary)
 
-        # Return the ID of the new error
-        return True
+        # Test if old component is new component
+        if oldComponent != component:
+            componentDict = self.readJSONFile('project')
+            for entry in componentDict['components']:
+                if entry['id'] == oldComponent:
+                    entry['errors'].remove(int(id))
+                if entry['id'] == int(component):
+                    entry['errors'].append(int(id))
+            self.writeJSONFile('project', componentDict)
+
+        # Test if old and new categories are 100% same
+        categoryDict = self.readJSONFile('error')
+        for catEntryId in oldCategories:
+            for entry in categoryDict['errorCat']:
+                if catEntryId == entry['id']:
+                    entry['error'].remove(int(id))
+
+        for catEntry in idList:
+            for entry in categoryDict['errorCat']:
+                if catEntry == entry['id']:
+                    entry['error'].append(int(id))
+
+        self.writeJSONFile('error', categoryDict)
+        return 0
 
     def deleteError(self, id):
-        #todo: delete the result and delete me from the category array
-        return 1
+        # Check if the provided id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if the searched project exist
+        if self.getErrorById(id) is None:
+            return False
+
+        jsonFILE = self.readJSONFile('error')
+
+        data = []
+
+        for entry in jsonFILE['errors']:
+            # Save all errorCat in the data array
+            if not entry['id'] == int(id):
+                data.append(entry)
+            else:
+                result = entry['result']
+
+        if result != -1:
+            self.deleteResult(result)
+
+        # Set the data array as the new errorCat array in the "jsonFile"
+        jsonFILE['errors'] = data
+
+        self.writeJSONFile('error', jsonFILE)
+        return True
+
     # ----------------------- Result Function
 
     def getAllResult(self):
@@ -962,4 +1013,124 @@ class Database_cl(object):
             if int(id) == entry['id']:
                 return entry
         return None
+
+    def createNewResult(self, desc, employee, error, categories):
+        if not self.isNumber(error):
+            return -1
+
+        if self.getComponentById(error) is None:
+            return -1
+
+        # Test if the employee exists
+        if not self.isNumber(employee):
+            return -2
+
+        if self.getQualityManagementById(employee) is None:
+            return -2
+
+        # idList is int array
+        if isinstance(categories, list):
+            try:
+                idList = [int(i) for i in categories]
+            except:
+                return -3
+        else:
+            try:
+                idList = [int(categories)]
+            except:
+                return -3
+
+        # Test if all categories exists
+        for categoryID in idList:
+            if self.getErrorCategoryById(categoryID) is None:
+                return -3
+
+        # Get the dict of the error file
+        dictionary = self.readJSONFile('error')
+
+        # Calculate the new ID and set the new max ID
+        id = dictionary['resMaxId'] + 1
+        dictionary['resMaxId'] = id
+
+        # Create new Entry
+        entry = {
+            'id': id,
+            'desc': desc,
+            'date': datetime.datetime.now().strftime('%d.%m.%Y - %H:%M'),
+            'employee': int(employee),
+            'type': 1,
+            'categories': idList,
+            'error': int(error)
+        }
+
+        # Append the new entry to the error array
+        dictionary['results'].append(entry)
+
+        for resEntry in idList:
+            for entry in dictionary['resultCat']:
+                if int(resEntry) == int(entry['id']):
+                    entry['result'].append(int(id))
+                    break
+
+        # Change the type and the result int
+        for errorEntry in dictionary['errors']:
+            if errorEntry['id'] == int(error):
+                errorEntry['type'] = "behoben"
+                errorEntry['result'] = int(id)
+
+        # Save the complete dictionary to the file
+        self.writeJSONFile('error', dictionary)
+
+        # Return the ID of the new error
+        return id
+
+    def updateResult(self, id):
+        # Test the id and check if result with id exists
+        if not self.isNumber(id):
+            return False
+
+        if self.getResultById(id) is None:
+            return False
+
+        # Get the result
+        dicitionary = self.readJSONFile('error')
+
+        # Update the result
+        for entry in dicitionary['results']:
+            if entry['id'] == int(id):
+                entry['type'] = 2
+                error = entry['error']
+
+        # Update the error
+        for entry in dicitionary['errors']:
+            if entry['id'] == int(error):
+                entry['type'] = "anderes"
+
+        # Save the data
+        self.writeJSONFile('error', dicitionary)
+        return True
+
+    def deleteResult(self, id):
+        # Check if the provided id is an int value
+        if not self.isNumber(id):
+            return False
+
+        # Check if the searched project exist
+        if self.getErrorById(id) is None:
+            return False
+
+        jsonFILE = self.readJSONFile('error')
+
+        data = []
+
+        for entry in jsonFILE['results']:
+            # Save all errorCat in the data array
+            if not entry['id'] == int(id):
+                data.append(entry)
+
+        # Set the data array as the new errorCat array in the "jsonFile"
+        jsonFILE['results'] = data
+
+        self.writeJSONFile('error', jsonFILE)
+        return True
 # EOF

@@ -29,12 +29,18 @@ class Application_cl {
         this.errorList_o = new Errors_cl();
         this.errorView_o = new ErrorView_cl();
         this.errorEdit_o = new ErrorEdit_cl();
-        this.errorAdd_o = new ErrorAdd_cl("main", "komponente-edit.tpl.html");
+        this.errorAdd_o = new ErrorAdd_cl("main", "fehler-edit.tpl.html");
 
         this.categoryList_o = new Categories_cl();
         this.categoryView_o = new CategoryView_cl();
         this.categoryEdit_o = new CategoryEdit_cl();
         this.categoryAdd_o = new CategoryAdd_cl("main", "category-add.tpl.html");
+
+        this.resultAdd_o = new ResultAdd_cl("main", "result-add.tpl.html");
+        this.resultEdit_o = new ResultEdit_cl();
+
+        this.evalCatError_o = new evalCatError_cl();
+        this.evalProError_o = new evalProError_cl();
 
         APPUTIL.list_o = new List_cl("main");
         APPUTIL.view_o = new View_cl("main");
@@ -140,8 +146,10 @@ class Application_cl {
                         }
                         break;
                     case "eval-pro-err":
+                        self.evalProError_o.render_px();
                         break;
                     case "eval-cat-err":
+                        self.evalCatError_o.render_px();
                         break;
                     case "logout":
                         self.login_o.render_px();
@@ -186,6 +194,8 @@ class Application_cl {
                                 break;
                             case "category":
                                 self.categoryEdit_o.render_px(data_opl[2], data_opl[3]);
+                            case "result":
+                                self.resultEdit_o.startRequest(data_opl[2]);
                         }
                         break;
                     case "add-item":
@@ -206,7 +216,7 @@ class Application_cl {
                                 self.categoryAdd_o.render_px();
                                 break;
                             case "result":
-                                console.log("Lösung", data_opl[2]);
+                                self.resultAdd_o.render_px(data_opl[2]);
                                 break;
                         }
                         break;

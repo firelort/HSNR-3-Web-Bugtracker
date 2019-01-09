@@ -1,0 +1,42 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Kategorien-Fehler</h2>
+</div>
+<div class="content-body">
+    @let index;@
+    @let secIndex;@
+    @let thirdIndex;@
+    @for index = 0; index < context[0].length; index++@
+    @let category = context[0][index]@
+    <h3>Kategorie: #category.name#</h3>
+
+    <table class="table-list">
+        <thead>
+        <tr>
+            <th class="clickable">Status</th>
+            <th>Mitarbeiter</th>
+            <th class="clickable">Datum</th>
+            <th>Komponente</th>
+        </tr>
+        </thead>
+        <tbody>
+        @for secIndex = 0; secIndex < category.error.length; secIndex++@
+        @let errorRef = category.error[secIndex]@
+        @for thirdIndex = 0; thirdIndex < context[1].length; thirdIndex++@
+        @let error = context[1][thirdIndex]@
+        @if error.id == errorRef@
+        <tr class="not-hoverable">
+            <td>#error.type#</td>
+            <td>#error.employee#</td>
+            <td>#error.date#</td>
+            <td>#error.component#</td>
+        </tr>
+        @endif@
+        @endfor@
+        @endfor@
+        </tbody>
+    </table>
+
+    @endfor@
+</div>
+<!--EOF-->

@@ -227,7 +227,6 @@ class ErrorView_cl {
                     requester_o.get_px(path_s,
                         function (responseText_spl) {
                             let dataL_o = JSON.parse(responseText_spl);
-                            console.log(dataL_o);
                             resolve(dataL_o);
                         }, function (responseText_spl) {
                             let data_o = JSON.parse(responseText_spl);
@@ -246,7 +245,6 @@ class ErrorView_cl {
                     requester_o.get_px(path_s,
                         function (responseText_spl) {
                             let dataL_o = JSON.parse(responseText_spl);
-                            console.log(dataL_o);
                             resolve(dataL_o);
                         }, function (responseText_spl) {
                             let data_o = JSON.parse(responseText_spl);
@@ -294,7 +292,6 @@ class ErrorView_cl {
                     }
 
                     for (index = 0; index < array[0].categories.length; index++) {
-                        console.log(array[0].categories[index]);
                         array[0].categories[index] = resultCatArray[array[0].categories[index]];
                     }
                 }
@@ -316,20 +313,131 @@ class ErrorView_cl {
             resultButton.parentNode.replaceChild(resultButtonClone, resultButton);
             resultButtonClone.addEventListener('click', this.handleEvent);
         }
+        let secResultButton = document.querySelector('main div.content-footer button#result-sec');
+        if (secResultButton != null) {
+            let secResultButtonClone = secResultButton.cloneNode(true);
+            secResultButton.parentNode.replaceChild(secResultButtonClone, secResultButton);
+            secResultButtonClone.addEventListener('click', this.handleEventSecond);
+        }
     }
 
     handleEvent(event) {
         event.stopPropagation();
         event.preventDefault();
-        let errorid = document.querySelector("main div.content-footer").dataset.id
+        let errorid = document.querySelector("main div.content-footer").dataset.id;
         APPUTIL.es_o.publish_px("app.cmd", ["add-item", "result", errorid]);
+    }
+
+    handleEventSecond(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        let resultid = document.querySelector("main div.content-footer button#result-sec").dataset.id;
+        APPUTIL.es_o.publish_px("app.cmd", ["edit-view", "result", resultid]);
     }
 
 }
 
 class ErrorEdit_cl {
     render_px(id) {
+        let requester_o = new APPUTIL.Requester_cl();
 
+        // Request the error
+        let path_s = "/fehler/?id=" + id;
+        let errorPromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        path_s = "/katfehler/";
+        let categoriePromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        // Request projects
+        path_s = "/projekt/";
+        let projektPromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        // Request QS-Employee
+        path_s = "/qsmitarbeiter/";
+        let employeePromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        path_s = "/komponente/";
+        let componentPromoise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+
+        Promise.all([errorPromise, categoriePromise, employeePromise, projektPromise, componentPromoise]).then(value => {
+            //value[0] -> Der Fehler mti der ID
+            //value[1] -> Alle Fehler Kategorien
+            //value[2] -> Alle Mitarbeiter QS
+            //value[3] -> Alle Projekte
+            //value[4] -> Alle Komponenten
+
+            //Map the the id to an object of id and name
+            let componentInfo = [];
+
+            for (let index = 0; index < value[4].length; index++) {
+                componentInfo[value[4][index].id] = {
+                    "id": value[4][index].id,
+                    "name": value[4][index].name
+                }
+            }
+
+            //Replace the information in the compnent array in each project
+            for (let index = 0; index < value[3].length; index++) {
+                for (let compIndex = 0; compIndex < value[3][index].component.length; compIndex++) {
+                    value[3][index].component[compIndex] = componentInfo[value[3][index].component[compIndex]];
+                }
+            }
+
+            let data_o = value;
+            data_o.pop();
+            APPUTIL.edit_o.render_px("fehler", data_o);
+        });
     }
 }
 
@@ -340,6 +448,152 @@ class ErrorAdd_cl {
     }
 
     render_px() {
+        let requester_o = new APPUTIL.Requester_cl();
 
+        // Request the error categories
+        let path_s = "/katfehler/";
+        let categoriePromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        // Request projects
+        path_s = "/projekt/";
+        let projektPromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        // Request QS-Employee
+        path_s = "/qsmitarbeiter/";
+        let employeePromise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+        path_s = "/komponente/";
+        let componentPromoise = new Promise(function (resolve, reject) {
+            requester_o.get_px(path_s,
+                function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    resolve(data_o);
+                }, function (responseText_spl) {
+                    let data_o = JSON.parse(responseText_spl);
+                    APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    reject(data_o['message']);
+                });
+        });
+
+
+        Promise.all([categoriePromise, employeePromise, projektPromise, componentPromoise]).then(value => {
+            //value[0] -> Alle Fehler Kategorien
+            //value[1] -> Alle Mitarbeiter QS
+            //value[2] -> Alle Projekte
+            //value[3] -> Alle Komponenten
+            //Map the the id to an object of id and name
+            let componentInfo = [];
+
+            for (let index = 0; index < value[3].length; index++) {
+                componentInfo[value[3][index].id] = {
+                    "id": value[3][index].id,
+                    "name": value[3][index].name
+                }
+            }
+
+            //Replace the information in the compnent array in each project
+            for (let index = 0; index < value[2].length; index++) {
+                for (let compIndex = 0; compIndex < value[2][index].component.length; compIndex++) {
+                    value[2][index].component[compIndex] = componentInfo[value[2][index].component[compIndex]];
+                }
+            }
+
+            let data_o = [{"createnew": true, "categories": []}].concat(value);
+            data_o.pop();
+            this.doRender(data_o)
+        });
+    }
+
+    doRender(data_o) {
+        let el_o = document.querySelector(this.element_s);
+        if (el_o != null) {
+            el_o.innerHTML = APPUTIL.tm_o.execute_px(this.template_s, data_o);
+            this.configHandleEvent();
+        }
+    }
+
+    configHandleEvent() {
+        let buttons = document.querySelectorAll('main div.content-footer button');
+        let index;
+        for (index = 0; index < buttons.length; index++) {
+            buttons[index].addEventListener('click', this.handleEvent);
+        }
+    }
+
+    handleEvent(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        switch (event.target.dataset.action) {
+            case "cancel":
+                APPUTIL.es_o.publish_px("app.cmd", ["list-view", "fehler"]);
+                break;
+            case "save":
+                let idElement = document.querySelector('main div.content-body form#fehler-form input[type=hidden]');
+                if (idElement != null) {
+                    idElement.parentNode.removeChild(idElement);
+                }
+
+                //Test if all inputs are filled
+                let form = document.querySelector('main div.content-body form#fehler-form');
+                let stopSave = false;
+                for (let index = 0; index < form.length; index++) {
+                    if (form[index].value === "") {
+                        APPUTIL.es_o.publish_px("alert", ["Es sind nicht alle Felder ausgefüllt."]);
+                        stopSave = true;
+                        break;
+                    }
+                }
+                if (stopSave) {
+                    break;
+                }
+
+                let requester_o = new APPUTIL.Requester_cl();
+                let formData = new FormData(form);
+
+                requester_o.post_px("/fehler/", formData,
+                    function (responseText_spl) {
+                        let data_o = JSON.parse(responseText_spl);
+                        let msg_s = "Fehler mit der ID: " + data_o['id'] + " erfolgreich erstellt.";
+                        APPUTIL.es_o.publish_px("success", [msg_s]);
+                        let message = ["list-view", "fehler"];
+                        message[10] = true;
+                        APPUTIL.es_o.publish_px("app.cmd", message);
+                    },
+                    function (responseText_spl) {
+                        let data_o = JSON.parse(responseText_spl);
+                        APPUTIL.es_o.publish_px("alert", [data_o['message']]);
+                    });
+                break;
+        }
     }
 }

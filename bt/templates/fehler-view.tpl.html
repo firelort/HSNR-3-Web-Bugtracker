@@ -47,8 +47,12 @@
 </div>
 <div class="content-footer" data-id="#context[0].id#">
     <button data-action="edit">Bearbeiten</button>
-    @if context[1].type === true@
+    @if context[0].type === "erkannt"@
     <button class="blue" data-action="create-result" id="result">Lösung hinzufügen</button>
+    @else @
+    @if context[0].type === "behoben"@
+    <button class="red" data-action="update-result" id="result-sec" data-id="#context[1].id#">Lösung funktioniert nicht</button>
+    @endif@
     @endif@
 </div>
 <!--EOF-->

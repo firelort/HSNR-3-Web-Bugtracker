@@ -1,11 +1,68 @@
 <!--Template-Template-->
+@let index;@
+@let secIndex;@
+@let error = context[0];@
+@let categories = context[1];@
+@let employees = context[2];@
+@let projects = context[3];@
+@let singleEntry;@
+@let secSingleEntry;@
 <div class="content-head">
-
+    @if error.createnew !== true@
+    <h2>Fehler bearbeiten</h2>
+    @else@
+    <h2>Fehler hinzufügen</h2>
+    @endif@
 </div>
 <div class="content-body">
-
+    <form class="page" id="fehler-form">
+        @if error.createnew !== true@
+        <input type="hidden" name="id" value="#error.id#"/>
+        @endif@
+        <label for="desc">Beschreibung</label>
+        <textarea id="desc" name="desc">#error.desc#</textarea>
+        <label for="employee">Mitarbeiter</label>
+        <select id="employee" name="employee">
+            @for index = 0; index < employees.length; index++@
+            @singleEntry = employees[index];@
+            @if error.employee === singleEntry.id@
+            <option value="#singleEntry.id#" selected>#singleEntry.lastname#, #singleEntry.firstname#</option>
+            @else@
+            <option value="#singleEntry.id#">#singleEntry.lastname#, #singleEntry.firstname#</option>
+            @endif@
+            @endfor@
+        </select>
+        <label for="component">Komponente</label>
+        <select id="component" name="component">
+            @for index = 0; index < projects.length; index++@
+            @singleEntry = projects[index];@
+            <optgroup label="#singleEntry.name#">
+                @for secIndex = 0; secIndex < singleEntry.component.length; secIndex++@
+                @secSingleEntry = singleEntry.component[secIndex]@
+                @if secSingleEntry.id === error.component@
+                <option value="#secSingleEntry.id#" selected>#secSingleEntry.name#</option>
+                @else@
+                <option value="#secSingleEntry.id#">#secSingleEntry.name#</option>
+                @endif@
+                @endfor@
+            </optgroup>
+            @endfor@
+        </select>
+        <label for="categories">Kategorien</label>
+        <select multiple id="categories" name="category">
+            @for index = 0; index < categories.length; index++@
+            @singleEntry = categories[index];@
+            @if error.categories.includes(singleEntry.id)@
+            <option value="#singleEntry.id#" selected>#singleEntry.name#</option>
+            @else@
+            <option value="#singleEntry.id#">#singleEntry.name#</option>
+            @endif@
+            @endfor@
+        </select>
+    </form>
 </div>
 <div class="content-footer">
-
+    <button class="blue" data-action="save">Absenden</button>
+    <button data-action="cancel">Zurück</button>
 </div>
 <!--EOF-->

@@ -1,0 +1,61 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Projekte-Fehler</h2>
+</div>
+<div class="content-body">
+    @let index;@
+    @let secIndex;@
+    @let thirdIndex;@
+    @let fourthIndex;@
+    @let fifthIndex;@
+    @let project;@
+
+    @for index = 0; index < context[0].length; index++@
+    @project = context[0][index];@
+    <div class="box">
+        <p class="projekt-title">#context[0][index].name#</p>
+        <hr/>
+
+        @for secIndex = 0; secIndex < project.component.length; secIndex++@
+        @let compRefID = project.component[secIndex];@
+
+        @for thirdIndex = 0; thirdIndex < context[2].length; thirdIndex++@
+        @let component = context[2][thirdIndex];@
+        @if compRefID === component.id@
+        <p class="component-title">Komponente: #component.name#</p>
+        <table class="table-list">
+            <thead>
+            <tr>
+                <th class="clickable">Status</th>
+                <th>Mitarbeiter</th>
+                <th class="clickable">Datum</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for fourthIndex = 0; fourthIndex < component.errors.length; fourthIndex++@
+            @let errorRef = component.errors[fourthIndex]@
+            @for fifthIndex = 0; fifthIndex < context[1].length; fifthIndex++@
+            @let error = context[1][fifthIndex]@
+            @if error.id == errorRef@
+            <tr class="not-hoverable">
+                <td>#error.type#</td>
+                <td>#error.employee#</td>
+                <td>#error.date#</td>
+            </tr>
+            @endif@
+            @endfor@
+            @endfor@
+            </tbody>
+        </table>
+        @break;@
+        @endif@
+
+        @endfor@
+
+
+        @endfor@
+    </div>
+
+    @endfor@
+</div>
+<!--EOF-->

@@ -287,3 +287,22 @@ textarea {
 .dot-anderes {
     background-color: #f44336;
 }
+
+div.box {
+    background-color: lightgray;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+p.projekt-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+p.component-title {
+    padding-left: 20px;
+    font-size: 18px;
+    margin-top: 40px;
+}

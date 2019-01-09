@@ -36,20 +36,20 @@ class Navigation_cl(object):
             "action": "list-view",
             "name": "Pflege Kategorien"
         }, {
-            "target": "eval-pro-err",
+            "target": "",
             "action": "eval-pro-err",
             "name": "Auswertung Projekte/Fehler"
         }, {
-            "target": "eval-cat-err",
-            "action": "eval-pro-err",
+            "target": "",
+            "action": "eval-cat-err",
             "name": "Auswertung Kategroien/Fehler"
         },
         ]
         if int(roleId) == 1:
             # The user is a QS-Mitarbeiter
             qsNav = [{
-                "target": "new-error",
-                "action": "list-view",
+                "target": "fehler",
+                "action": "add-item",
                 "name": "Neuen Fehler anlegen"
             }]
             return qsNav + commonNav

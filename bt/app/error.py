@@ -76,13 +76,13 @@ class Error_Cl(object):
         # Test if it was successful
         if id == -1:
             # The error wasn't created, because at least one category doesn't exists
-            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Katgorien")
+            raise cherrypy.HTTPError(400, "Die angegebenen Komponente existiert nicht")
         elif id == -2:
             # The error wasn't created, because at least one component doesn't exists
-            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Komponenten")
+            raise cherrypy.HTTPError(400, "Der angegebene QS-Mitarbeiter existiert nicht")
         elif id == -3:
             # The error wasn't created, because the employee isn't allowed
-            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit dem QS-Mitarbeiter")
+            raise cherrypy.HTTPError(400, "Es existieren nicht alle Kategorien")
         # The error was successful created
         return {
             "id": id
@@ -92,18 +92,18 @@ class Error_Cl(object):
     def PUT(self, id, desc, employee, component, category):
         result = self.db.updateError(id, desc, employee, component, category)
         # Test if it was successful
-        if result == -1:
+        if result == 1:
             # The error wasn't updated, because at least one category doesn't exists
-            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Katgorien")
-        elif result == -2:
+            raise cherrypy.HTTPError(400, "Es existiert der angegebene Fehler nicht")
+        elif result == 2:
             # The error wasn't updated, because at least one component doesn't exists
-            raise cherrypy.HTTPError(400, "Es existieren nicht alle angebenen Komponenten")
-        elif result == -3:
+            raise cherrypy.HTTPError(400, "Es existiert die angegebene Komponente nicht")
+        elif result == 3:
             # The error wasn't updated, because the employee isn't allowed
-            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit dem QS-Mitarbeiter")
-        elif result == -4:
+            raise cherrypy.HTTPError(400, "Es existiert der angegebene QS-Mitarbeiter nicht")
+        elif result == 4:
             # The error wasn't updated, because the given id wasn't found.
-            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit dem QS-Mitarbeiter")
+            raise cherrypy.HTTPError(400, "Es existiert ein Problem mit den Kategorien")
         # The error was successful updated
         return {
             "code": 200,
@@ -191,6 +191,29 @@ class Result_Cl(object):
             raise cherrypy.HTTPError(404, "Es existiert kein Fehler mit dieser ID")
             # The given ID was valid
         return data
+
+    @cherrypy.tools.json_out()
+    def POST(self, desc, employee, error, categories):
+        id = self.db.createNewResult(desc, employee, error, categories)
+        if id == -1:
+            raise cherrypy.HTTPError(400, "Der angegebene Fehler konnte nicht gefunden werden")
+        if id == -2:
+            raise cherrypy.HTTPError(400, "Der angegeben Mitarbeiter konnte nicht gefunden werden")
+        if id == -3:
+            raise cherrypy.HTTPError(400, "Eine Kategorie ist unzulässig")
+        return {
+            "id": id
+        }
+
+    @cherrypy.tools.json_out()
+    def PUT(self, id):
+        if self.db.updateResult(id):
+            return {
+                "code": 200,
+                "status": "OK",
+                "message": "Lösung erfolgreich bearbeitet"
+            }
+        raise cherrypy.HTTPError(404, "Die angegebene Lösung existiert nicht")
 
 class ResultCategories_Cl(object):
     exposed = True

@@ -1,0 +1,29 @@
+<!--Template-Template-->
+<div class="content-head">
+    <h2>Lösung hinzufügen</h2>
+</div>
+<div class="content-body">
+    <form class="page" id="result-form">
+        <input type="hidden" name="error" value="#context[2]#"/>
+        <label for="desc">Beschreibung</label>
+        <textarea name="desc" id="desc"></textarea>
+        <label for="employee">Mitarbeiter</label>
+        <select id="employee" name="employee">
+            @let index;@
+            @for index = 0; index < context[1].length; index++@
+            <option value="#context[1][index].id#">#context[1][index].lastname#, #context[1][index].firstname#</option>
+            @endfor@
+        </select>
+        <label for="category">Kategorien</label>
+        <select multiple id="category" name="categories">
+            @for index = 0; index < context[0].length; index++@
+            <option value="#context[0][index].id#">#context[0][index].name#</option>
+            @endfor@
+        </select>
+    </form>
+</div>
+<div class="content-footer">
+    <button class="blue" data-action="save">Absenden</button>
+    <button data-action="cancel">Zurück</button>
+</div>
+<!--EOF-->
