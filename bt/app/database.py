@@ -1025,7 +1025,7 @@ class Database_cl(object):
         if not self.isNumber(employee):
             return -2
 
-        if self.getQualityManagementById(employee) is None:
+        if self.getSoftwareDeveloperById(employee) is None:
             return -2
 
         # idList is int array
